@@ -45,7 +45,7 @@ export const AppBar: FC = () => {
             <Tooltip direction="bottom" tip="Home">
                 <Button onClick={handleHomeClicked} variant="text">
                     <Typography noMargin noPointer variant="h6">
-                        MUI Nested Menu
+                        MUI(v7) Nested Menu
                     </Typography>
                 </Button>
             </Tooltip>
