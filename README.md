@@ -1,3 +1,13 @@
+## **Wahlu**
+
+Post once, everywhere. Schedule and publish to all your social media channels from one place. Save hours. Grow your status. Pay less. [Try it now!](https://wahlu.com?utm_source=mui-nested-menu&utm_medium=github&utm_campaign=readme)
+
+<a href="https://wahlu.com?utm_source=mui-nested-menu&utm_medium=github&utm_campaign=readme">
+  <img src="./apps/docs/public/wahlu-banner.png" alt="Wahlu - Post once, everywhere" width="100%" />
+</a>
+
+---
+
 # 🪆 Mui Nested Menu
 
 ## It's not perfect, but it's pretty good.

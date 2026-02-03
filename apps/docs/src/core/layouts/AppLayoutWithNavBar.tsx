@@ -2,7 +2,7 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { FC, ReactNode } from 'react';
 import { Outlet } from 'react-router';
-import { Padding, Row, Scrollable } from 'ui';
+import { Row, Scrollable } from 'ui';
 
 import { APP_BAR_HEIGHT, MENU_PANEL_WIDTH } from '@/core/constants';
 
@@ -19,21 +19,33 @@ const PanelContainer = styled.div`
         display: flex;
         flex-direction: column;
         height: 100vh;
-        overflow: scroll;
+        overflow-y: auto;
+        overflow-x: hidden;
         padding-top: ${APP_BAR_HEIGHT}px;
         width: ${MENU_PANEL_WIDTH}px;
+        min-width: ${MENU_PANEL_WIDTH}px;
     `}
 `;
 
 const ContentContainer = styled.div`
-    ${() => css`
-        align-items: center;
+    ${({ theme }) => css`
+        background-color: ${theme.palette.bg1};
         display: flex;
         flex-direction: column;
+        flex: 1;
         height: 100vh;
-        overflow: scroll;
+        overflow-y: auto;
+        overflow-x: hidden;
         padding-top: ${APP_BAR_HEIGHT}px;
-        width: calc(100vw - ${MENU_PANEL_WIDTH}px);
+        transition: background-color 200ms ease;
+    `}
+`;
+
+const ContentInner = styled.div`
+    ${({ theme }) => css`
+        max-width: 768px;
+        padding: calc(${theme.sizes.padding} * 10);
+        width: 100%;
     `}
 `;
 
@@ -49,9 +61,9 @@ export const AppLayoutWithNavBar: FC<AppLayoutWithNavBarProps> = ({ appbar, pane
             <PanelContainer>{panelContent}</PanelContainer>
             <ContentContainer>
                 <Scrollable>
-                    <Padding multiplier={12}>
+                    <ContentInner>
                         <Outlet />
-                    </Padding>
+                    </ContentInner>
                 </Scrollable>
             </ContentContainer>
         </Row>

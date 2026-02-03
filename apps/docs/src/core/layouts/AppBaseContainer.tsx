@@ -7,6 +7,7 @@ const AppBaseElement = styled.div`
     height: 100vh;
     margin: 0;
     padding: 0;
+    transition: background-color 200ms ease;
     width: 100vw;
 `;
 
