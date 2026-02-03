@@ -31,7 +31,7 @@ The following items and interfaces are exported from the package:
 - `MenuItemData` - An interface for the `menuItemsData` prop.
 
 ## 💻 Contributing
-
+ 
 Pull requests for [the project](https://github.com/webzep
 /mui-nested-menu) are more than welcome. Please make sure to stick to the coding style used throughout the project.
 
