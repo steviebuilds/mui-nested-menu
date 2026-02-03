@@ -1,3 +1,4 @@
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { ThemeMode } from 'common';
 import { FC, useContext, useRef, useState } from 'react';
@@ -14,18 +15,36 @@ const ActionsGroup = styled.div`
 `;
 
 const AppBarContainer = styled.div`
-    align-items: center;
-    background-color: ${({ theme }) => theme.palette.bg1};
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    display: flex;
-    height: ${APP_BAR_HEIGHT}px;
-    justify-content: space-between;
-    max-height: ${APP_BAR_HEIGHT}px;
-    min-height: ${APP_BAR_HEIGHT}px;
-    padding: 0 2rem;
-    position: fixed;
-    width: 100vw;
-    z-index: ${({ theme }) => theme.zIndex.navbar};
+    ${({ theme }) => css`
+        align-items: center;
+        background-color: ${theme.palette.mode === 'light'
+            ? 'rgba(255, 255, 255, 0.8)'
+            : 'rgba(9, 9, 11, 0.8)'};
+        backdrop-filter: saturate(180%) blur(12px);
+        border-bottom: 1px solid ${theme.palette.border1};
+        display: flex;
+        height: ${APP_BAR_HEIGHT}px;
+        justify-content: space-between;
+        max-height: ${APP_BAR_HEIGHT}px;
+        min-height: ${APP_BAR_HEIGHT}px;
+        padding: 0 1.5rem;
+        position: fixed;
+        transition: background-color 200ms ease, border-color 200ms ease;
+        width: 100vw;
+        z-index: ${theme.zIndex.navbar};
+    `}
+`;
+
+const ThemeToggle = styled(Button)`
+    ${({ theme }) => css`
+        color: ${theme.palette.font3};
+        font-size: 0.8125rem;
+        padding: 6px 12px;
+
+        &:hover {
+            color: ${theme.palette.font1};
+        }
+    `}
 `;
 
 export const AppBar: FC = () => {
@@ -51,9 +70,9 @@ export const AppBar: FC = () => {
             </Tooltip>
             <ActionsGroup>
                 <Tooltip direction="bottom" tip="Theme">
-                    <Button onClick={toggleMenu} ref={anchorElRef} variant="text">
+                    <ThemeToggle onClick={toggleMenu} ref={anchorElRef} variant="text">
                         {titleCase(settings?.mode)}
-                    </Button>
+                    </ThemeToggle>
                 </Tooltip>
                 <Menu
                     anchorElement={anchorElRef}

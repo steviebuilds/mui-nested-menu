@@ -7,6 +7,21 @@ import { Code, P, Subheading } from '@/components/StyledTypography';
 export const InstallationPage: FC = () => {
     return (
         <Fragment>
+            <a href="https://wahlu.com?utm_source=mui-nested-menu&utm_medium=docs&utm_campaign=banner" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
+                <img
+                    src="/wahlu-banner.png"
+                    alt="Wahlu - Post once, everywhere"
+                    style={{ width: '100%', borderRadius: 8, marginBottom: 16 }}
+                />
+            </a>
+            <P>
+                Post once, everywhere. Schedule and publish to all your social media channels from one place. Save
+                hours. Grow your status. Pay less.{' '}
+                <a href="https://wahlu.com?utm_source=mui-nested-menu&utm_medium=docs&utm_campaign=banner" target="_blank" rel="noopener noreferrer">
+                    Try it now!
+                </a>
+            </P>
+            <hr style={{ margin: '24px 0', border: 'none', borderTop: '1px solid #e0e0e0' }} />
             <Typography variant="h1">🪆 Mui Nested Menu</Typography>
             <Typography variant="h2">It&apos;s not perfect, but it&apos;s pretty good.</Typography>
             <P>

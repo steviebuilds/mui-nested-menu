@@ -8,9 +8,9 @@ export type SizesConfig = {
 };
 
 export const themeSizes: SizesConfig = {
-    borderRadiusLarge: '8px',
-    borderRadiusMedium: '4px',
-    borderRadiusSmall: '3px',
+    borderRadiusLarge: '12px',
+    borderRadiusMedium: '8px',
+    borderRadiusSmall: '6px',
     borderWidth: '1px',
     navbarHeight: '40px',
     padding: '4px',
