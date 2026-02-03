@@ -63,3 +63,4 @@ Version | Breaking     | Changes
 3.4.0   | no           | Fixes disabled prop. Adds delay prop to NestedMenuItem.
 4.0.0   | probably not | Upgrade to mui 6.3.1.
 4.0.1   | probably not | Add React 19 to peer dependencies.
+4.0.2   | no           | Upgrade to MUI 7 and fix TypeScript compatibility.
