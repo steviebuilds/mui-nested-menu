@@ -1,4 +1,4 @@
-import { SxProps } from '@mui/system/styleFunctionSx/styleFunctionSx';
+import { SxProps } from '@mui/material';
 
 export interface MenuItemData {
     uid?: string;

@@ -1,5 +1,5 @@
-import Button, { ButtonProps } from '@mui/material/Button';
-import Menu, { MenuProps } from '@mui/material/Menu';
+import Button, { ButtonProps as MuiButtonProps } from '@mui/material/Button';
+import Menu, { MenuProps as MuiMenuProps } from '@mui/material/Menu';
 import { forwardRef, useState } from 'react';
 
 import { MenuItemData } from '../definitions';
@@ -10,8 +10,8 @@ interface NestedDropdownProps {
     children?: React.ReactNode;
     menuItemsData?: MenuItemData;
     onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
-    ButtonProps?: Partial<ButtonProps>;
-    MenuProps?: Partial<MenuProps>;
+    ButtonProps?: Partial<MuiButtonProps>;
+    MenuProps?: Partial<MuiMenuProps>;
 }
 
 export const NestedDropdown = forwardRef<HTMLDivElement | null, NestedDropdownProps>(function NestedDropdown(
@@ -35,12 +35,21 @@ export const NestedDropdown = forwardRef<HTMLDivElement | null, NestedDropdownPr
         menuItemsData: data?.items ?? [],
     });
 
+
     return (
         <div ref={ref} {...rest}>
-            <Button onClick={handleClick} endIcon={<ChevronDown />} {...ButtonProps}>
+            <Button
+                onClick={handleClick}
+                endIcon={<ChevronDown />}
+                {...ButtonProps}
+            >
                 {data?.label ?? 'Menu'}
             </Button>
-            <Menu anchorEl={anchorEl} open={open} onClose={handleClose} {...MenuProps}>
+            <Menu
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleClose}
+                {...MenuProps}>
                 {menuItems}
             </Menu>
         </div>

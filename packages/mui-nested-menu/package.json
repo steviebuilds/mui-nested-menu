@@ -1,7 +1,7 @@
 {
     "name": "mui-nested-menu",
-    "version": "4.0.0",
-    "description": "Infinitely deep nested menu items for MUI 5.",
+    "version": "4.0.1",
+    "description": "Infinitely deep nested menu items for MUI 7.",
     "keywords": [
         "design",
         "material",
@@ -39,12 +39,12 @@
         "version:currenttemplate": "VERSION=$(npx fx package.json 'x => x.version') && npx fx package.template.json '{...x, version: \"'$VERSION'\"}' > temp.json && mv temp.json package.template.json"
     },
     "dependencies": {
-        "@emotion/react": "11.14.0",
-        "@emotion/styled": "11.14.0",
-        "@mui/material": "6.3.1",
-        "@mui/system": "6.3.1",
-        "react": "18.2.0",
-        "react-dom": "18.2.0"
+        "@emotion/react": "^11.14.0",
+        "@emotion/styled": "^11.14.1",
+        "@mui/material": "^7.3.7",
+        "@mui/system": "^7.3.7",
+        "react": "^19.2.3",
+        "react-dom": "^19.2.3"
     },
     "devDependencies": {
         "parcel": "2.13.3",
