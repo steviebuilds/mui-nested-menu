@@ -1,12 +1,10 @@
-## **Wahlu**
+# **Wahlu**
 
 Post once, everywhere. Schedule and publish to all your social media channels from one place. Save hours. Grow your status. Pay less. [Try it now!](https://wahlu.com?utm_source=mui-nested-menu&utm_medium=github&utm_campaign=readme)
 
-<a href="https://wahlu.com?utm_source=mui-nested-menu&utm_medium=github&utm_campaign=readme">
-  <img src="./apps/docs/public/wahlu-banner.png" alt="Wahlu - Post once, everywhere" width="100%" />
-</a>
+[![Wahlu - Post once, everywhere](./apps/docs/public/wahlu-banner.png)](https://wahlu.com?utm_source=mui-nested-menu&utm_medium=github&utm_campaign=readme)
 
----
+--------------------------------------------------------------------------------
 
 # 🪆 Mui Nested Menu
 
@@ -18,7 +16,7 @@ This package provides components to let you nest menu items infinitely deep. The
 
 ## 📦 Install
 
-The code is [open source](https://github.com/webzep/mui-nested-menu), so you can use the library by copying the `src/mui-nested-menu` directory to your project (if you'd like to adapt the components) or by installing it via NPM.
+The code is [open source](https://github.com/steviebuilds/mui-nested-menu), so you can use the library by copying the `src/mui-nested-menu` directory to your project (if you'd like to adapt the components) or by installing it via NPM.
 
 ```
 $ npm install mui-nested-menu
@@ -41,8 +39,8 @@ The following items and interfaces are exported from the package:
 - `MenuItemData` - An interface for the `menuItemsData` prop.
 
 ## 💻 Contributing
- 
-Pull requests for [the project](https://github.com/webzep
+
+Pull requests for [the project](https://github.com/steviebuilds
 /mui-nested-menu) are more than welcome. Please make sure to stick to the coding style used throughout the project.
 
 1. Clone the project from GitHub - it is a monorepo.
@@ -58,7 +56,7 @@ Version | Breaking     | Changes
 3.0.0   | no           | Support for ESM and CJS modules.
 3.1.0   | yes          | Make disabled ans SX props available. Fixes typo `nesteMenuItemsFromObjectProps` to `nestedMenuItemsFromObjectProps`.
 3.2.0   | no           | Provide event and item in callback.
-3.2.1   | no           | [@mui/material/styles/styled 4 level import fixed](https://github.com/webzep/mui-nested-menu/pull/32)
+3.2.1   | no           | [@mui/material/styles/styled 4 level import fixed](https://github.com/steviebuilds/mui-nested-menu/pull/32)
 3.2.2   | no           | Documentation updates
 3.4.0   | no           | Fixes disabled prop. Adds delay prop to NestedMenuItem.
 4.0.0   | probably not | Upgrade to mui 6.3.1.
