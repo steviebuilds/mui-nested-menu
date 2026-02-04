@@ -7,7 +7,12 @@ import { Code, P, Subheading } from '@/components/StyledTypography';
 export const InstallationPage: FC = () => {
     return (
         <Fragment>
-            <a href="https://wahlu.com?utm_source=mui-nested-menu&utm_medium=docs&utm_campaign=banner" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
+            <a
+                href="https://wahlu.com?utm_source=mui-nested-menu&utm_medium=docs&utm_campaign=banner"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ textDecoration: 'none' }}
+            >
                 <img
                     src="/wahlu-banner.png"
                     alt="Wahlu - Post once, everywhere"
@@ -15,9 +20,13 @@ export const InstallationPage: FC = () => {
                 />
             </a>
             <P>
-                Post once, everywhere. Schedule and publish to all your social media channels from one place. Save
-                hours. Grow your status. Pay less.{' '}
-                <a href="https://wahlu.com?utm_source=mui-nested-menu&utm_medium=docs&utm_campaign=banner" target="_blank" rel="noopener noreferrer">
+                Post once, everywhere. Schedule and publish to all your social media channels from one place.
+                Save hours. Grow your status. Pay less.{' '}
+                <a
+                    href="https://wahlu.com?utm_source=mui-nested-menu&utm_medium=docs&utm_campaign=banner"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
                     Try it now!
                 </a>
             </P>
@@ -31,9 +40,9 @@ export const InstallationPage: FC = () => {
             </P>
             <Subheading>📦 Install</Subheading>
             <P>
-                The code is <a href="https://github.com/webzep/mui-nested-menu">open source</a>, so you can
-                use the library by copying the <Code>src/mui-nested-menu</Code> directory to your project (if
-                you&apos;d like to adapt the components) or by installing it via{' '}
+                The code is <a href="https://github.com/steviebuilds/mui-nested-menu">open source</a>, so you
+                can use the library by copying the <Code>src/mui-nested-menu</Code> directory to your project
+                (if you&apos;d like to adapt the components) or by installing it via{' '}
                 <a href="https://www.npmjs.com/package/mui-nested-menu">NPM</a>.
             </P>
             <CodeBlock code="npm install mui-nested-menu" />
@@ -66,8 +75,9 @@ export const InstallationPage: FC = () => {
             </P>
             <Subheading>💻 Contributing</Subheading>
             <P>
-                Pull requests for <a href="https://github.com/webzep/mui-nested-menu">the project</a> are
-                more than welcome. Please make sure to stick to the coding style used throughout the project.
+                Pull requests for <a href="https://github.com/steviebuilds/mui-nested-menu">the project</a>{' '}
+                are more than welcome. Please make sure to stick to the coding style used throughout the
+                project.
             </P>
             <P>
                 The nested menu code can be found in <Code>packages/mui-nested-menu</Code>. This way,
