@@ -62,3 +62,4 @@ Version | Breaking     | Changes
 4.0.0   | probably not | Upgrade to mui 6.3.1.
 4.0.1   | probably not | Add React 19 to peer dependencies.
 4.0.2   | no           | Upgrade to MUI 7 and fix TypeScript compatibility.
+4.0.3   | no           | Add MUI v7 to peer dependency range. Upgrade docs to React 19 and Vite 5.
