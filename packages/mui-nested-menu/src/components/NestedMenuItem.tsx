@@ -172,8 +172,8 @@ const NestedMenuItem = forwardRef<HTMLLIElement | null, NestedMenuItemProps>(
             // under the finger, and the click then selects one of its items (#45).
             if (isTouchRef.current) {
                 ContainerProps.onMouseEnter?.(e);
-                
-return;
+
+                return;
             }
 
             hoverTimeoutRef.current && clearTimeout(hoverTimeoutRef.current);
