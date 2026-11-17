@@ -157,8 +157,8 @@ export const ContextMenuPage: FC = () => {
 </ContextMenu>`}
             />
             <P>
-                With <Code>menuItems</Code>, a click on an item doesn&apos;t close the menu; Escape or a click
-                outside does. With <Code>menuItemsData</Code>, item clicks close it for you.
+                Either way, a click on an item closes the menu, as do Escape and a click outside. A parent
+                item only opens its submenu.
             </P>
 
             <Subheading>Menu and submenu props</Subheading>

@@ -12,8 +12,8 @@ run every command with `pnpm` (or `npx -y pnpm@10.28.0` if your global pnpm is a
     ```sh
     pnpm --filter mui-nested-menu typecheck
     pnpm --filter mui-nested-menu test
-    scripts/test-matrix.sh     # MUI 5/6/7/9 x React 18/19: tsc --noEmit and vitest
-    scripts/smoke-dist.sh      # builds dist, npm packs it, require() and import() under plain Node
+    scripts/test-matrix.sh     # MUI 5 x React 17, MUI 5/6/7/9 x React 18/19: tsc --noEmit and vitest
+    scripts/smoke-dist.sh      # builds dist, npm packs it, require() and import() under plain Node; React 17 also gets a webpack 5 build
     ```
 
 4. Publish (needs `npm login` and your 2FA code):
@@ -22,7 +22,7 @@ run every command with `pnpm` (or `npx -y pnpm@10.28.0` if your global pnpm is a
     pnpm --filter mui-nested-menu release
     ```
 
-    `release` runs `dist` (clean, tsup build, copy) and then `npm publish` from `dist/`.
+    `release` runs the tests and the type check, then `dist` (clean, tsup build, copy), then `npm publish` from `dist/`. The bundles use the classic JSX transform (see `tsup.config.ts`) so that they import only `react`: React 17 has no `exports` map, so `react/jsx-runtime` would not resolve from ESM.
 
 If publishing fails part-way (for example the auth expired), the build is already in `dist/`. Log in again and run
 `cd packages/mui-nested-menu/dist && npm publish`.
@@ -34,7 +34,7 @@ If publishing fails part-way (for example the auth expired), the build is alread
 | `build`     | tsup: `dist/index.js` (CJS), `dist/index.mjs` (ESM), `dist/index.d.ts`, `dist/index.d.mts`. Both bundles start with `"use client"`.                                                                                                                        |
 | `dist`      | `clean`, `build`, then `copy`.                                                                                                                                                                                                                             |
 | `copy`      | `scripts/copy-dist.mjs`: copies the root `README.md`, `LICENSE` and `package.template.json` (as `package.json`) into `dist/`. In the README copy, `utm_medium=github` becomes `utm_medium=npm-readme`, so analytics can tell GitHub and npm readers apart. |
-| `release`   | `dist`, then `npm publish` from `dist/`.                                                                                                                                                                                                                   |
+| `release`   | `test`, `typecheck`, `dist`, then `npm publish` from `dist/`.                                                                                                                                                                                              |
 | `test`      | vitest (jsdom, Testing Library, user-event).                                                                                                                                                                                                               |
 | `typecheck` | `tsc --noEmit` over `src` and `tests`.                                                                                                                                                                                                                     |
 

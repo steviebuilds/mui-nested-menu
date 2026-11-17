@@ -266,7 +266,7 @@ For menus near the right edge of the screen. The keyboard follows: ArrowLeft ope
 </NestedMenuItem>
 ```
 
-On `NestedDropdown` and `ContextMenu`, `MenuProps` styles the root menu and `SubmenuProps` styles every submenu at every depth. Any other MUI `Menu` prop, such as `hideBackdrop`, goes in the same place.
+On `NestedDropdown` and `ContextMenu`, `MenuProps` styles the root menu and `SubmenuProps` styles every submenu at every depth. Any other MUI `Menu` prop, such as `hideBackdrop`, goes in the same place. `slotProps.paper` on `Menu` needs MUI 5.14 or later; `sx` and `className` through `MenuProps` or `SubmenuProps` work on every supported version.
 
 ```tsx
 const paper = { slotProps: { paper: { sx: { borderRadius: 2, minWidth: 200 } } } };
@@ -293,7 +293,7 @@ await user.hover(screen.getByRole('menuitem', { name: 'Export' }));
 await user.click(await screen.findByRole('menuitem', { name: 'PDF' }));
 ```
 
-If `user.click` still complains about `pointer-events: none`, use `userEvent.setup({ pointerEventsCheck: 0 })`. [Testing example](https://mui-nested-menu.vercel.app/examples#testing-with-testing-library)
+`user.click` works on items inside a submenu with the default `userEvent.setup()` in 4.1.0 (#66); no `pointerEventsCheck` option is needed. [Testing example](https://mui-nested-menu.vercel.app/examples#testing-with-testing-library)
 
 ## Contributing
 

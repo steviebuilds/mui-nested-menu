@@ -6,7 +6,7 @@ All notable changes to `mui-nested-menu` are listed here. The format follows
 
 ## [4.1.0] - 2026-11-17
 
-Everything in this release is additive or a bug fix. No prop, type or export was removed or renamed.
+Mostly additions and bug fixes. No prop, type or export was removed or renamed, but a few behaviours changed: see Changed.
 
 ### Added
 
@@ -20,7 +20,7 @@ Everything in this release is additive or a bug fix. No prop, type or export was
 -   `MenuProps` and `SubmenuProps` on `ContextMenu`.
 -   `aria-haspopup="menu"` and `aria-expanded` on parent items.
 -   MUI 9 in the `@mui/material` peer range, so a fresh install with the current MUI no longer fails with
-    `ERESOLVE`. MUI 5, 6, 7 and 9 are tested with React 18 and 19.
+    `ERESOLVE`. MUI 5, 6, 7 and 9 are tested with React 18 and 19, and MUI 5 also with React 17.
 -   Tests (vitest and Testing Library), a MUI x React compatibility matrix (`scripts/test-matrix.sh`) and a
     packaging smoke test (`scripts/smoke-dist.sh`).
 
@@ -29,7 +29,7 @@ Everything in this release is additive or a bug fix. No prop, type or export was
 -   Keyboard: the arrow keys no longer leave several submenus open, and no key crashes after a submenu has been
     closed. Focus moving out of a submenu closes it, so only the active path is ever open (#9, #55, #40).
 -   Escape closes one submenu level and returns focus to its parent item.
--   Touch: a tap on a parent item toggles its submenu, and the tap that opens a submenu can no longer select an
+-   Touch devices: a tap on a parent item toggles its submenu, and the tap that opens a submenu can no longer select an
     item in it (#45).
 -   A `callback` on an item with children now fires when the row is clicked. Clicks on nested items inside
     `ContextMenu` now fire their callbacks and close the menu (#34).
@@ -41,8 +41,6 @@ Everything in this release is additive or a bug fix. No prop, type or export was
     and position (#42).
 -   `ContextMenu` no longer calls a hook conditionally.
 -   Moving the pointer from an item onto its submenu no longer closes and reopens the submenu with React 18.
--   TypeScript: `NestedMenuItem` works as a JSX component with the matching `@types/react` for React 18 and 19
-    (#53).
 
 ### Changed
 
@@ -51,6 +49,11 @@ Everything in this release is additive or a bug fix. No prop, type or export was
     package load with `require()` and with Node ESM `import` for MUI 5, 6, 7 and 9, and in the Next.js app
     router without `transpilePackages` (#20, #29, #63).
 -   `sideEffects: false`, so bundlers can tree-shake the package.
+-   The new `exports` map means deep imports such as `mui-nested-menu/index.js` no longer resolve. Import from
+    `mui-nested-menu`.
+-   Clicking a parent item opens its submenu and fires its `callback`; the menu stays open.
+-   Escape closes one submenu level at a time instead of the whole menu.
+-   `PaperProps` on `Menu` is ignored by MUI 9, so use `slotProps.paper` there (MUI 5.14 and later).
 -   Hover opening and closing is the same as before. A parent item now also opens on click.
 -   The repository uses pnpm. Publishing is `pnpm --filter mui-nested-menu release`.
 

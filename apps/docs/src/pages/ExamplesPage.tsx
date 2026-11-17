@@ -671,7 +671,9 @@ export const ExamplesPage: FC = () => {
                 <Code>NestedMenuItem</Code> styles the item itself. To style its submenu, pass the class in{' '}
                 <Code>MenuProps</Code> and target the paper inside it (<IssueLink issue={54} />
                 ). Your own <Code>style</Code>, <Code>sx</Code> and <Code>slotProps.paper</Code> are kept too,
-                and no longer break hover or pointer events.
+                and no longer break hover or pointer events. <Code>slotProps.paper</Code> on <Code>Menu</Code>{' '}
+                needs MUI 5.14 or later; <Code>sx</Code> and <Code>className</Code> through{' '}
+                <Code>MenuProps</Code> or <Code>SubmenuProps</Code> work on every supported version.
             </P>
             <SampleBox hint="Open Edit, then hover Paste special.">
                 <SubmenuClassDemo />
@@ -774,9 +776,9 @@ export const ExamplesPage: FC = () => {
             </SampleBox>
             <CodeBlock code={testingCode} collapsable />
             <Callout>
-                If <Code>user.click</Code> still complains about <Code>pointer-events: none</Code>, turn the
-                check off: <Code>{'userEvent.setup({ pointerEventsCheck: 0 })'}</Code>. For keyboard tests,
-                see <Link to={`/${PathNames.KEYBOARD_AND_TOUCH}`}>Keyboard and touch</Link>.
+                <Code>user.click</Code> works with the default <Code>userEvent.setup()</Code> in 4.1.0; no{' '}
+                <Code>pointerEventsCheck</Code> option is needed. For keyboard tests, see{' '}
+                <Link to={`/${PathNames.KEYBOARD_AND_TOUCH}`}>Keyboard and touch</Link>.
             </Callout>
         </Fragment>
     );
