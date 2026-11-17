@@ -1,7 +1,7 @@
 {
 	"name": "mui-nested-menu",
-	"version": "4.0.3",
-	"description": "Infinitely deep nested menu items for MUI 7.",
+	"version": "4.1.0",
+	"description": "Infinitely deep nested menu items for MUI 5, 6 and 7.",
 	"keywords": [
 		"design",
 		"material",
@@ -19,24 +19,18 @@
 	},
 	"license": "MIT",
 	"author": "Steve Richardson",
-	"main": "dist/index.js",
+	"main": "src/index.ts",
 	"module": "src/index.ts",
 	"source": "./src/index.ts",
 	"types": "src/index.ts",
 	"scripts": {
-		"build:package": "npm run set-package:build && parcel build --no-optimize --no-source-maps --no-content-hash --target && npm run set-package:dev",
+		"build": "tsup",
 		"clean": "rm -rf dist",
-		"copy": "cp ../../README.md ./dist/README.md && cp ../../LICENSE ./dist/LICENSE && cp ./package.template.json ./dist/package.json",
-		"dist": "npm run clean && npm run build:package && npm run copy",
-		"prepare": "npm run version:currentpackage",
-		"publish:major": "npm run prepare && npm version major && npm run dist && cd ./dist && npm publish  && cd ../../..",
-		"publish:minor": "npm run prepare && npm version minor && npm run dist && cd ./dist && npm publish  && cd ../../..",
-		"publish:patch": "npm run prepare && npm version patch && npm run dist && cd ./dist && npm publish  && cd ../../..",
-		"set-package:build": "npm pkg set module=dist/module.js && npm pkg set types=dist/index.d.ts",
-		"set-package:dev": "npm pkg set module=src/index.ts && npm pkg set types=src/index.ts",
-		"postversion": "npm run version:currenttemplate",
-		"version:currentpackage": "npm pkg set 'version'=$(npm view mui-nested-menu version)",
-		"version:currenttemplate": "VERSION=$(npx fx package.json 'x => x.version') && npx fx package.template.json '{...x, version: \"'$VERSION'\"}' > temp.json && mv temp.json package.template.json"
+		"copy": "node scripts/copy-dist.mjs",
+		"dist": "pnpm run clean && pnpm run build && pnpm run copy",
+		"release": "pnpm run dist && cd dist && npm publish",
+		"test": "vitest run",
+		"typecheck": "tsc --noEmit -p ."
 	},
 	"dependencies": {
 		"@emotion/react": "^11.14.0",
@@ -47,7 +41,16 @@
 		"react-dom": "^19.2.3"
 	},
 	"devDependencies": {
-		"parcel": "2.13.3",
-		"typescript": "5.7.3"
+		"@testing-library/dom": "^10.4.2",
+		"@testing-library/react": "^16.3.3",
+		"@testing-library/user-event": "^14.6.12",
+		"@types/node": "^26.6.6",
+		"@types/react": "^19.3.0",
+		"@types/react-dom": "^19.3.0",
+		"jsdom": "^31.0.1",
+		"tsup": "^9.0.0",
+		"typescript": "5.7.3",
+		"vite": "^7.3.8",
+		"vitest": "^5.1.0"
 	}
 }
