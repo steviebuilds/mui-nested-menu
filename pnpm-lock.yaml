@@ -62,6 +62,9 @@ importers:
       '@mui/material':
         specifier: ^7.3.7
         version: 7.3.11(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.1))(@types/react@19.3.0)(react@19.3.1))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+      common:
+        specifier: workspace:*
+        version: link:../../packages/common
       mui-nested-menu:
         specifier: workspace:*
         version: link:../../packages/mui-nested-menu

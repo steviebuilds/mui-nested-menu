@@ -13,6 +13,7 @@
         "@emotion/styled": "^11.14.0",
         "@mui/icons-material": "^7.3.7",
         "@mui/material": "^7.3.7",
+        "common": "workspace:*",
         "mui-nested-menu": "workspace:*",
         "prismjs": "1.29.0",
         "react": "^19.0.0",
