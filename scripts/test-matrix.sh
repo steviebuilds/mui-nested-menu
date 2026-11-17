@@ -2,7 +2,7 @@
 # Compatibility matrix: type-check and run the test suite against each MUI x React pair.
 #
 # Usage: scripts/test-matrix.sh [mui:react ...]     e.g. scripts/test-matrix.sh 5:18 7:19
-# With no arguments it runs all eight combinations (MUI 5, 6, 7, 9 x React 18, 19), one at a time. Each combination gets a throwaway
+# With no arguments it runs MUI 5 x React 17 and all eight combinations of MUI 5, 6, 7, 9 x React 18, 19, one at a time. Each combination gets a throwaway
 # project under /tmp with matching @types/react and testing libraries, then `tsc --noEmit` (covers
 # #53) and vitest run on a copy of src/ and tests/. Needs network (pnpm install) and Node >= 22.
 set -uo pipefail
@@ -15,7 +15,7 @@ trap '[ -n "${KEEP:-}" ] || rm -rf "$BASE"' EXIT
 
 COMBOS=("$@")
 if [ ${#COMBOS[@]} -eq 0 ]; then
-    COMBOS=(5:18 5:19 6:18 6:19 7:18 7:19 9:18 9:19)
+    COMBOS=(5:17 5:18 5:19 6:18 6:19 7:18 7:19 9:18 9:19)
 fi
 
 RESULTS=()
@@ -25,6 +25,9 @@ run_combo() {
     local mui="${1%%:*}" react="${1##*:}"
     local dir="$BASE/mui$mui-react$react"
     local install="skipped" types="skipped" tests="skipped"
+    # React 17 needs Testing Library 12 (which brings @testing-library/dom 8).
+    local rtl="^16" tldom="\"@testing-library/dom\": \"^10\","
+    if [ "$react" = 17 ]; then rtl="^12" tldom=""; fi
     mkdir -p "$dir"
     cp -r "$PKG/src" "$PKG/tests" "$PKG/vitest.config.ts" "$dir/"
 
@@ -40,8 +43,8 @@ run_combo() {
         "react-dom": "^$react"
     },
     "devDependencies": {
-        "@testing-library/dom": "^10",
-        "@testing-library/react": "^16",
+        $tldom
+        "@testing-library/react": "$rtl",
         "@testing-library/user-event": "^14",
         "@types/node": "^22",
         "@types/react": "^$react",

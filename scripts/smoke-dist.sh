@@ -3,8 +3,12 @@
 # each MUI version and check that both `require()` and a Node ESM `import()` load it and render a
 # NestedDropdown and a NestedMenuItem to a string with react-dom/server under plain Node.
 #
-# Usage: scripts/smoke-dist.sh [mui:react ...]     e.g. scripts/smoke-dist.sh 5:18 7:19
-# With no arguments it runs MUI 5, 6, 7 and 9 with React 18 and 19. Needs network.
+# React 17 combos also run a tiny webpack 5 production build (target node) of an ESM entry that imports the
+# package, then run the bundle. React 17 has no exports map, so this catches an ESM build that imports
+# 'react/jsx-runtime' (Node ESM: ERR_MODULE_NOT_FOUND; webpack 5: "fully specified" resolve error).
+#
+# Usage: scripts/smoke-dist.sh [mui:react ...]     e.g. scripts/smoke-dist.sh 5:17 7:19
+# With no arguments it runs MUI 5 with React 17, and MUI 5, 6, 7 and 9 with React 18 and 19. Needs network.
 set -uo pipefail
 
 PNPM=(npx -y pnpm@10.28.0)
@@ -15,7 +19,7 @@ trap '[ -n "${KEEP:-}" ] || rm -rf "$BASE"' EXIT
 
 COMBOS=("$@")
 if [ ${#COMBOS[@]} -eq 0 ]; then
-    COMBOS=(5:18 5:19 6:18 6:19 7:18 7:19 9:18 9:19)
+    COMBOS=(5:17 5:18 5:19 6:18 6:19 7:18 7:19 9:18 9:19)
 fi
 
 echo "=== building dist" >&2
@@ -25,6 +29,10 @@ for file in index.js index.mjs index.d.ts index.d.mts package.json README.md LIC
     [ -f "$PKG/dist/$file" ] || { echo "dist/$file is missing" >&2; exit 1; }
 done
 for file in index.js index.mjs; do
+    if grep -q 'react/jsx-runtime' "$PKG/dist/$file"; then
+        echo "dist/$file imports react/jsx-runtime, which React 17 cannot resolve from ESM" >&2
+        exit 1
+    fi
     [ "$(head -n 1 "$PKG/dist/$file")" = '"use client";' ] || { echo "dist/$file does not start with \"use client\"" >&2; exit 1; }
 done
 if grep -q 'utm_medium=github' "$PKG/dist/README.md"; then
@@ -72,7 +80,7 @@ FAILED=0
 run_combo() {
     local mui="${1%%:*}" react="${1##*:}"
     local dir="$BASE/mui$mui-react$react"
-    local install="FAILED" req="-" esm="-" versions="-"
+    local install="FAILED" req="-" esm="-" pack="-" versions="-"
     mkdir -p "$dir"
     cat >"$dir/package.json" <<JSON
 { "name": "smoke-mui$mui-react$react", "private": true, "version": "0.0.0" }
@@ -87,6 +95,23 @@ import { createRequire } from 'node:module';
 const check = createRequire(import.meta.url)('./check.cjs');
 console.log(check(await import('mui-nested-menu'), await import('@mui/material'), 'import'));
 JS
+    # Webpack entry: ESM syntax in a .js file (not strict), so the package resolves through its "import" condition.
+    cat >"$dir/entry.js" <<'JS'
+import * as MuiMenu from 'mui-nested-menu';
+import * as Mui from '@mui/material';
+import React from 'react';
+import { renderToString } from 'react-dom/server';
+
+const html = renderToString(
+    React.createElement(
+        Mui.MenuList,
+        null,
+        React.createElement(MuiMenu.NestedMenuItem, { label: 'Parent', parentMenuOpen: false }, React.createElement('div', null, 'child'))
+    )
+);
+if (!html.includes('Parent')) throw new Error('webpack bundle rendered: ' + html.slice(0, 120));
+console.log('webpack bundle ok');
+JS
 
     echo "=== MUI $mui x React $react: installing" >&2
     if (cd "$dir" && npm install --no-audit --no-fund --loglevel=error \
@@ -98,12 +123,22 @@ JS
             `mui ${v("@mui/material")}, react ${v("react")}`')"
         if out="$(cd "$dir" && node cjs.cjs 2>&1)"; then req="ok"; else req="FAILED"; echo "$out" | head -10 >&2; fi
         if out="$(cd "$dir" && node esm.mjs 2>&1)"; then esm="ok"; else esm="FAILED"; echo "$out" | head -10 >&2; fi
+        if [ "$react" = 17 ]; then
+            pack="FAILED"
+            if (cd "$dir" && npm install --no-save --no-audit --no-fund --loglevel=error webpack@^5 webpack-cli@^5 >"$dir/webpack-install.log" 2>&1) \
+                && out="$(cd "$dir" && ./node_modules/.bin/webpack --mode production --target node --entry ./entry.js --output-path ./out --output-filename bundle.cjs 2>&1)" \
+                && out="$out"$'\n'"$(cd "$dir" && node out/bundle.cjs 2>&1)" && echo "$out" | grep -q 'webpack bundle ok'; then
+                pack="ok"
+            else
+                echo "${out:-$(tail -15 "$dir/webpack-install.log")}" | head -20 >&2
+            fi
+        fi
     else
         tail -15 "$dir/install.log" >&2
     fi
 
-    [ "$install" = ok ] && [ "$req" = ok ] && [ "$esm" = ok ] || FAILED=1
-    RESULTS+=("| MUI $mui | React $react | $versions | $req | $esm |")
+    [ "$install" = ok ] && [ "$req" = ok ] && [ "$esm" = ok ] && [ "$pack" != FAILED ] || FAILED=1
+    RESULTS+=("| MUI $mui | React $react | $versions | $req | $esm | $pack |")
     [ -n "${KEEP:-}" ] || rm -rf "$dir"
 }
 
@@ -112,7 +147,7 @@ for combo in "${COMBOS[@]}"; do
 done
 
 echo
-echo "| MUI | React | Resolved versions | require() | import() |"
-echo "|---|---|---|---|---|"
+echo "| MUI | React | Resolved versions | require() | import() | webpack 5 build + run |"
+echo "|---|---|---|---|---|---|"
 printf '%s\n' "${RESULTS[@]}"
 exit $FAILED
