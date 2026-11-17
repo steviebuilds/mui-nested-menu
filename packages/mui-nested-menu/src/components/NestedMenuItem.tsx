@@ -130,6 +130,7 @@ const NestedMenuItem = forwardRef<HTMLLIElement | null, NestedMenuItemProps>(
         useEffect(
             () => () => {
                 hoverTimeoutRef.current && clearTimeout(hoverTimeoutRef.current);
+                leaveTimeoutRef.current && clearTimeout(leaveTimeoutRef.current);
                 blurTimeoutRef.current && clearTimeout(blurTimeoutRef.current);
             },
             []
@@ -181,8 +182,11 @@ const NestedMenuItem = forwardRef<HTMLLIElement | null, NestedMenuItemProps>(
         const handleMouseLeave = (e: MouseEvent<HTMLElement>) => {
             hoverTimeoutRef.current && clearTimeout(hoverTimeoutRef.current);
 
+            // Moving from the item onto its submenu fires leave and then enter in the same event on
+            // React 18 (the submenu sits in a portal), so closing waits one tick for enter to cancel it.
             if (!isTouchRef.current) {
-                setIsSubMenuOpen(false);
+                leaveTimeoutRef.current && clearTimeout(leaveTimeoutRef.current);
+                leaveTimeoutRef.current = setTimeout(() => setIsSubMenuOpen(false), 0);
             }
 
             if (ContainerProps.onMouseLeave) {
@@ -355,11 +359,16 @@ const NestedMenuItem = forwardRef<HTMLLIElement | null, NestedMenuItemProps>(
                     autoFocus={false}
                     disableAutoFocus
                     disableEnforceFocus
-                    disableEscapeKeyDown
                     disableRestoreFocus
                     {...menuProps}
                     onClose={(event, reason) => {
-                        setIsSubMenuOpen(false);
+                        // The modal handles Escape itself (MUI 9 has no way to turn that off), so the
+                        // submenu closes here and focus goes back to its parent item.
+                        if (reason === 'escapeKeyDown') {
+                            closeAndFocusItem();
+                        } else {
+                            setIsSubMenuOpen(false);
+                        }
                         onMenuClose?.(event, reason);
                     }}
                 >

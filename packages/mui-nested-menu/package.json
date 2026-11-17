@@ -1,56 +1,56 @@
 {
-	"name": "mui-nested-menu",
-	"version": "4.1.0",
-	"description": "Infinitely deep nested menu items for MUI 5, 6 and 7.",
-	"keywords": [
-		"design",
-		"material",
-		"mui",
-		"react",
-		"ui"
-	],
-	"homepage": "https://mui-nested-menu.vercel.app/",
-	"bugs": {
-		"url": "https://github.com/steviebuilds/mui-nested-menu/issues"
-	},
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/steviebuilds/mui-nested-menu.git"
-	},
-	"license": "MIT",
-	"author": "Steve Richardson",
-	"main": "src/index.ts",
-	"module": "src/index.ts",
-	"source": "./src/index.ts",
-	"types": "src/index.ts",
-	"scripts": {
-		"build": "tsup",
-		"clean": "rm -rf dist",
-		"copy": "node scripts/copy-dist.mjs",
-		"dist": "pnpm run clean && pnpm run build && pnpm run copy",
-		"release": "pnpm run dist && cd dist && npm publish",
-		"test": "vitest run",
-		"typecheck": "tsc --noEmit -p ."
-	},
-	"dependencies": {
-		"@emotion/react": "^11.14.0",
-		"@emotion/styled": "^11.14.1",
-		"@mui/material": "^7.3.7",
-		"@mui/system": "^7.3.7",
-		"react": "^19.2.3",
-		"react-dom": "^19.2.3"
-	},
-	"devDependencies": {
-		"@testing-library/dom": "^10.4.2",
-		"@testing-library/react": "^16.3.3",
-		"@testing-library/user-event": "^14.6.12",
-		"@types/node": "^26.6.6",
-		"@types/react": "^19.3.0",
-		"@types/react-dom": "^19.3.0",
-		"jsdom": "^31.0.1",
-		"tsup": "^9.0.0",
-		"typescript": "5.7.3",
-		"vite": "^7.3.8",
-		"vitest": "^5.1.0"
-	}
+    "name": "mui-nested-menu",
+    "version": "4.1.0",
+    "description": "Infinitely deep nested menu items for MUI 5, 6, 7 and 9.",
+    "keywords": [
+        "design",
+        "material",
+        "mui",
+        "react",
+        "ui"
+    ],
+    "homepage": "https://mui-nested-menu.vercel.app/",
+    "bugs": {
+        "url": "https://github.com/steviebuilds/mui-nested-menu/issues"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/steviebuilds/mui-nested-menu.git"
+    },
+    "license": "MIT",
+    "author": "Steve Richardson",
+    "main": "src/index.ts",
+    "module": "src/index.ts",
+    "source": "./src/index.ts",
+    "types": "src/index.ts",
+    "scripts": {
+        "build": "tsup",
+        "clean": "rm -rf dist",
+        "copy": "node scripts/copy-dist.mjs",
+        "dist": "pnpm run clean && pnpm run build && pnpm run copy",
+        "release": "pnpm run dist && cd dist && npm publish",
+        "test": "vitest run",
+        "typecheck": "tsc --noEmit -p ."
+    },
+    "dependencies": {
+        "@emotion/react": "^11.14.0",
+        "@emotion/styled": "^11.14.1",
+        "@mui/material": "^7.3.7",
+        "@mui/system": "^7.3.7",
+        "react": "^19.2.3",
+        "react-dom": "^19.2.3"
+    },
+    "devDependencies": {
+        "@testing-library/dom": "^10.4.2",
+        "@testing-library/react": "^16.3.3",
+        "@testing-library/user-event": "^14.6.12",
+        "@types/node": "^26.6.6",
+        "@types/react": "^19.3.0",
+        "@types/react-dom": "^19.3.0",
+        "jsdom": "^31.0.1",
+        "tsup": "^9.0.0",
+        "typescript": "5.7.3",
+        "vite": "^7.3.8",
+        "vitest": "^5.1.0"
+    }
 }

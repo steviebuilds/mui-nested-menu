@@ -240,7 +240,10 @@ describe('MenuProps', () => {
         const { user } = renderMenu(
             <NestedDropdown
                 menuItemsData={data}
-                SubmenuProps={{ PaperProps: { style: { height: '300px' } }, style: { maxHeight: 'auto' } }}
+                SubmenuProps={{
+                    slotProps: { paper: { style: { height: '300px' } } },
+                    style: { maxHeight: 'auto' },
+                }}
             />
         );
         await openDropdown(user);

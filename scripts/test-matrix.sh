@@ -2,7 +2,7 @@
 # Compatibility matrix: type-check and run the test suite against each MUI x React pair.
 #
 # Usage: scripts/test-matrix.sh [mui:react ...]     e.g. scripts/test-matrix.sh 5:18 7:19
-# With no arguments it runs all six combinations, one at a time. Each combination gets a throwaway
+# With no arguments it runs all eight combinations (MUI 5, 6, 7, 9 x React 18, 19), one at a time. Each combination gets a throwaway
 # project under /tmp with matching @types/react and testing libraries, then `tsc --noEmit` (covers
 # #53) and vitest run on a copy of src/ and tests/. Needs network (pnpm install) and Node >= 22.
 set -uo pipefail
@@ -15,7 +15,7 @@ trap '[ -n "${KEEP:-}" ] || rm -rf "$BASE"' EXIT
 
 COMBOS=("$@")
 if [ ${#COMBOS[@]} -eq 0 ]; then
-    COMBOS=(5:18 5:19 6:18 6:19 7:18 7:19)
+    COMBOS=(5:18 5:19 6:18 6:19 7:18 7:19 9:18 9:19)
 fi
 
 RESULTS=()

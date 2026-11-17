@@ -1,34 +1,26 @@
 import type { MenuProps } from '@mui/material';
 
-type PaperSlot = Record<string, unknown> | ((ownerState: unknown) => Record<string, unknown>) | undefined;
+type SubmenuMenuProps = Partial<Omit<MenuProps, 'children'>>;
 
-const withPointerEvents = (paper: Record<string, unknown> | undefined) => ({
-    ...paper,
-    style: { ...(paper?.style as object | undefined), pointerEvents: 'auto' },
-});
-
-const mergePaper = (paper: PaperSlot) =>
-    typeof paper === 'function'
-        ? (ownerState: unknown) => withPointerEvents(paper(ownerState))
-        : withPointerEvents(paper);
+// pointer-events is inherited, so the paper needs its own value to take pointer events back from the root.
+const paperTakesPointerEvents = { '& .MuiPaper-root': { pointerEvents: 'auto' } };
 
 /**
  * Merge a user's `MenuProps` with what a submenu needs to keep its hover and pointer handling:
  * the (invisible) popover root ignores pointer events so the parent menu stays reachable, and
- * the paper takes them back so the submenu can be hovered, clicked and scrolled. The user's own
- * `style`, `PaperProps` and `slotProps.paper` are kept, with only `pointerEvents` forced.
+ * the paper takes them back so the submenu can be hovered, clicked and scrolled.
+ *
+ * The user's `style`, `sx`, `className` and slot props are kept as they are. The paper is reached with
+ * a selector rather than `PaperProps` or `slotProps.paper`, because `PaperProps` is gone in MUI 9 and
+ * `slotProps.paper` only exists on `Menu` from MUI 5.14.
  */
-export function mergeSubmenuProps(menuProps: Partial<Omit<MenuProps, 'children'>> = {}) {
-    const { PaperProps, slotProps, style, ...rest } = menuProps;
-    const paperSlot = slotProps?.paper as PaperSlot;
-    const paperProps =
-        paperSlot !== undefined
-            ? { slotProps: { ...slotProps, paper: mergePaper(paperSlot) } }
-            : { PaperProps: mergePaper(PaperProps as PaperSlot), slotProps };
+export function mergeSubmenuProps(menuProps: SubmenuMenuProps = {}): SubmenuMenuProps {
+    const { style, sx, ...rest } = menuProps;
+    const userSx = (Array.isArray(sx) ? sx : sx === undefined ? [] : [sx]) as SubmenuMenuProps['sx'][];
 
     return {
         ...rest,
-        ...paperProps,
-        style: { ...style, pointerEvents: 'none' as const },
-    } as Partial<Omit<MenuProps, 'children'>>;
+        style: { ...style, pointerEvents: 'none' },
+        sx: [paperTakesPointerEvents, ...userSx] as SubmenuMenuProps['sx'],
+    };
 }
