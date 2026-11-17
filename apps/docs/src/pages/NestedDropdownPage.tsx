@@ -2,14 +2,16 @@ import ImportExportRoundedIcon from '@mui/icons-material/ImportExportRounded';
 import NewIcon from '@mui/icons-material/InsertDriveFileOutlined';
 import SaveAsIcon from '@mui/icons-material/SaveOutlined';
 import SaveIcon from '@mui/icons-material/SaveRounded';
-import { createTheme, ThemeProvider as MTP } from '@mui/material/styles';
 import { MenuItemData, NestedDropdown } from 'mui-nested-menu';
 import { FC, Fragment, MouseEvent } from 'react';
+import { Link } from 'react-router-dom';
 
 import { CodeBlock } from '@/components/CodeBlock';
 import { PageHeader } from '@/components/ImportSample';
+import { PropsTable } from '@/components/PropsTable';
 import { SampleBox } from '@/components/SampleBox';
 import { Code, P, Subheading } from '@/components/StyledTypography';
+import { PathNames } from '@/core/configs/paths';
 
 const menuItemsData: MenuItemData = {
     items: [
@@ -26,23 +28,23 @@ const menuItemsData: MenuItemData = {
             leftIcon: <SaveIcon />,
         },
         {
+            delay: 300,
             items: [
                 {
                     callback: (event: MouseEvent<HTMLElement>, item: MenuItemData) =>
                         console.log('Save As > Option 1 clicked', event, item),
-                    label: 'This way delayed',
+                    label: 'Option 1',
                     rightIcon: <SaveAsIcon />,
                 },
                 {
                     callback: (event: MouseEvent<HTMLElement>, item: MenuItemData) =>
                         console.log('Save As > Option 2 clicked', event, item),
                     disabled: true,
-                    label: 'Option 2',
+                    label: 'Option 2 (disabled)',
                     leftIcon: <SaveAsIcon />,
                 },
             ],
-            delay: 300,
-            label: 'Save As (300ms delay)',
+            label: 'Save As (300 ms delay)',
             leftIcon: <SaveAsIcon />,
         },
         {
@@ -51,14 +53,14 @@ const menuItemsData: MenuItemData = {
                     items: [
                         {
                             callback: (event: MouseEvent<HTMLElement>, item: MenuItemData) =>
-                                console.log('Export > FT1 > O1 clicked', event, item),
+                                console.log('Export > File Type 1 > Option 1 clicked', event, item),
                             label: 'Option 1',
                             rightIcon: <SaveAsIcon />,
-                            sx: { color: '#FF0000' },
+                            sx: { color: 'error.main' },
                         },
                         {
                             callback: (event: MouseEvent<HTMLElement>, item: MenuItemData) =>
-                                console.log('Export > FT1 > O2 clicked', event, item),
+                                console.log('Export > File Type 1 > Option 2 clicked', event, item),
                             label: 'Option 2',
                             leftIcon: <SaveAsIcon />,
                         },
@@ -67,7 +69,7 @@ const menuItemsData: MenuItemData = {
                 },
                 {
                     callback: (event: MouseEvent<HTMLElement>, item: MenuItemData) =>
-                        console.log('Export > FT2 clicked', event, item),
+                        console.log('Export > File Type 2 clicked', event, item),
                     label: 'File Type 2',
                 },
             ],
@@ -79,42 +81,7 @@ const menuItemsData: MenuItemData = {
     label: 'File',
 };
 
-export const NestedDropdownPage: FC = () => {
-    return (
-        <Fragment>
-            <PageHeader />
-            <P>
-                You can create an object with the structure seen below and pass it as the{' '}
-                <Code>menuItemsData</Code> prop of the <Code>NestedDropdown</Code> component. Make it as deep
-                as you like.
-            </P>
-
-            <SampleBox>
-                <MTP theme={createTheme()}>
-                    <NestedDropdown
-                        onClick={() => console.log('Clicked')}
-                        menuItemsData={menuItemsData}
-                        MenuProps={{ elevation: 3 }}
-                        ButtonProps={{ variant: 'outlined' }}
-                    />
-                </MTP>
-            </SampleBox>
-            <CodeBlock
-                code={`<NestedDropdown
-  menuItemsData={menuItemsData}
-  MenuProps={{elevation: 3}}
-  ButtonProps={{variant: 'outlined'}}
-  onClick={() => console.log('Clicked')}
-/>`}
-            />
-
-            <Subheading>Data Structure</Subheading>
-            <P>
-                The <Code>menuItemsData</Code> variable looks like the following:
-            </P>
-
-            <CodeBlock
-                code={`const menuItemsData: MenuItemData = {
+const menuItemsDataCode = `const menuItemsData: MenuItemData = {
   label: 'File',
   items: [
     {
@@ -128,20 +95,20 @@ export const NestedDropdownPage: FC = () => {
       callback: (event, item) => console.log('Save clicked', event, item),
     },
     {
-      label: 'Save As (300ms delay)',
+      label: 'Save As (300 ms delay)',
       leftIcon: <SaveAsIcon />,
-	  delay: 300,
+      delay: 300,
       items: [
         {
-          label: 'This way delayed',
+          label: 'Option 1',
           rightIcon: <SaveAsIcon />,
           callback: (event, item) => console.log('Save As > Option 1 clicked', event, item),
         },
         {
-          label: 'Option 2',
+          label: 'Option 2 (disabled)',
           leftIcon: <SaveAsIcon />,
-          callback: (event, item) => console.log('Save As > Option 2 clicked', event, item),
           disabled: true,
+          callback: (event, item) => console.log('Save As > Option 2 clicked', event, item),
         },
       ],
     },
@@ -156,24 +123,151 @@ export const NestedDropdownPage: FC = () => {
             {
               label: 'Option 1',
               rightIcon: <SaveAsIcon />,
-              callback: (event, item) => console.log('Export > FT1 > O1 clicked', event, item),
-              sx: { color: '#FF0000' },
+              sx: { color: 'error.main' },
+              callback: (event, item) => console.log('Export > File Type 1 > Option 1 clicked', event, item),
             },
             {
               label: 'Option 2',
               leftIcon: <SaveAsIcon />,
-              callback: (event, item) => console.log('Export > FT1 > O2 clicked', event, item),
+              callback: (event, item) => console.log('Export > File Type 1 > Option 2 clicked', event, item),
             },
           ],
         },
         {
           label: 'File Type 2',
-          callback: (event, item) => console.log('Export > FT2 clicked', event, item),
+          callback: (event, item) => console.log('Export > File Type 2 clicked', event, item),
         },
       ],
     },
   ],
-};`}
+};`;
+
+const submenuStyle = {
+    slotProps: { paper: { sx: { borderRadius: 2, minWidth: 180 } } },
+};
+
+export const NestedDropdownPage: FC = () => {
+    return (
+        <Fragment>
+            <PageHeader description="A button that opens a nested menu. Describe the menu as data and pass it in; nest it as deep as you like." />
+
+            <SampleBox hint="Click File, then hover Save As or Export. Clicks are logged to the console.">
+                <NestedDropdown
+                    ButtonProps={{ variant: 'outlined' }}
+                    MenuProps={{ elevation: 3 }}
+                    menuItemsData={menuItemsData}
+                    onClick={() => console.log('Button clicked')}
+                />
+            </SampleBox>
+            <CodeBlock
+                code={`<NestedDropdown
+  menuItemsData={menuItemsData}
+  MenuProps={{ elevation: 3 }}
+  ButtonProps={{ variant: 'outlined' }}
+  onClick={() => console.log('Button clicked')}
+/>`}
+            />
+
+            <Subheading>Data structure</Subheading>
+            <P>
+                The root object&apos;s <Code>label</Code> (or <Code>renderLabel</Code>) is the button&apos;s
+                text, and its <Code>items</Code> are the menu. Every field is described under{' '}
+                <Link to={`/${PathNames.MENU_ITEMS_FROM_OBJECT}#menu-item-data`}>MenuItemData</Link>.
+            </P>
+            <CodeBlock code={menuItemsDataCode} collapsable />
+
+            <Subheading>Submenu props and placement</Subheading>
+            <P>
+                <Code>MenuProps</Code> styles the root menu only. Use <Code>SubmenuProps</Code> for every
+                submenu at every depth, and <Code>placement=&quot;left&quot;</Code> when the button sits near
+                the right edge of the screen.
+            </P>
+            <SampleBox hint="Submenus open to the left and share the same rounded paper." justify="flex-end">
+                <NestedDropdown
+                    ButtonProps={{ variant: 'contained' }}
+                    MenuProps={submenuStyle}
+                    SubmenuProps={submenuStyle}
+                    menuItemsData={menuItemsData}
+                    placement="left"
+                />
+            </SampleBox>
+            <CodeBlock
+                code={`const paperStyle = {
+  slotProps: { paper: { sx: { borderRadius: 2, minWidth: 180 } } },
+};
+
+<NestedDropdown
+  menuItemsData={menuItemsData}
+  placement="left"
+  MenuProps={paperStyle}      // root menu
+  SubmenuProps={paperStyle}   // every submenu, at every depth
+  ButtonProps={{ variant: 'contained' }}
+/>`}
+            />
+
+            <Subheading>Props</Subheading>
+            <PropsTable
+                rows={[
+                    {
+                        description: (
+                            <Fragment>
+                                The menu. The root&apos;s <Code>label</Code> or <Code>renderLabel</Code> is
+                                the button label (default &quot;Menu&quot;); its <Code>items</Code> are the
+                                menu items.
+                            </Fragment>
+                        ),
+                        name: 'menuItemsData',
+                        type: 'MenuItemData',
+                    },
+                    {
+                        description: 'Called when the button is clicked, as the menu opens.',
+                        name: 'onClick',
+                        type: '(event: MouseEvent<HTMLButtonElement>) => void',
+                    },
+                    {
+                        description: (
+                            <Fragment>
+                                Props for the MUI <Code>Button</Code>, e.g. <Code>variant</Code>,{' '}
+                                <Code>color</Code> or <Code>startIcon</Code>.
+                            </Fragment>
+                        ),
+                        name: 'ButtonProps',
+                        type: 'Partial<ButtonProps>',
+                    },
+                    {
+                        description: (
+                            <Fragment>
+                                Props for the root MUI <Code>Menu</Code> only.
+                            </Fragment>
+                        ),
+                        name: 'MenuProps',
+                        type: 'Partial<MenuProps>',
+                    },
+                    {
+                        description: (
+                            <Fragment>
+                                Props for every submenu&apos;s MUI <Code>Menu</Code>, at every depth (
+                                <Code>sx</Code>, <Code>className</Code>, <Code>slotProps</Code>,{' '}
+                                <Code>hideBackdrop</Code>…).
+                            </Fragment>
+                        ),
+                        name: 'SubmenuProps',
+                        since: '4.1',
+                        type: 'Partial<MenuProps>',
+                    },
+                    {
+                        default: "'right'",
+                        description: 'Which side submenus open on. The arrow keys follow it.',
+                        name: 'placement',
+                        since: '4.1',
+                        type: "'right' | 'left'",
+                    },
+                    {
+                        description: 'Forwarded to the wrapping <div>.',
+                        name: 'ref',
+                        type: 'Ref<HTMLDivElement>',
+                    },
+                ]}
             />
         </Fragment>
     );

@@ -1,16 +1,19 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import { FC } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { Column, Space } from 'ui';
+import { FC, Fragment } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 
+import { SponsorCard } from '@/components/SponsorCard';
 import { PathNames } from '@/core/configs/paths';
 
-const PanelContainer = styled(Column)`
+const PanelContainer = styled.nav`
     ${({ theme }) => css`
         background-color: ${theme.palette.bg2};
         border-right: 1px solid ${theme.palette.border1};
-        height: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        flex: 1 0 auto;
         padding: 20px 12px;
         width: 100%;
     `}
@@ -23,70 +26,102 @@ const NavSectionLabel = styled.span`
         font-size: 0.6875rem;
         font-weight: 600;
         letter-spacing: 0.08em;
-        padding: 4px 12px;
+        padding: 20px 12px 6px;
         text-transform: uppercase;
+
+        &:first-of-type {
+            padding-top: 4px;
+        }
     `}
 `;
 
-const NavItem = styled.button<{ isActive: boolean }>`
+const NavItem = styled(Link, { shouldForwardProp: (prop) => prop !== 'isActive' })<{ isActive: boolean }>`
     ${({ theme, isActive }) => css`
-        align-items: center;
-        appearance: none;
         background-color: ${isActive ? theme.palette.bg3 : 'transparent'};
-        border: none;
         border-radius: ${theme.sizes.borderRadiusMedium};
         color: ${isActive ? theme.palette.font1 : theme.palette.font3};
-        cursor: pointer;
-        display: flex;
+        display: block;
         font-family: ${theme.typeography.family};
         font-size: 0.875rem;
         font-weight: ${isActive ? 500 : 400};
-        justify-content: flex-start;
         line-height: 1.5;
-        padding: 8px 12px;
-        text-align: left;
-        transition: background-color 150ms ease, color 150ms ease;
+        padding: 6px 12px;
+        text-decoration: none;
+        transition:
+            background-color 150ms ease,
+            color 150ms ease;
         width: 100%;
 
         &:hover {
             background-color: ${theme.palette.bg3};
             color: ${theme.palette.font1};
         }
+
+        &:focus-visible {
+            outline: 2px solid ${theme.palette.brand1};
+            outline-offset: -2px;
+        }
     `}
 `;
 
-type NavigateButtonProps = {
+const SponsorSlot = styled.div`
+    margin-top: auto;
+    padding-top: 24px;
+`;
+
+type NavLinkInfo = {
     label: string;
     path: (typeof PathNames)[keyof typeof PathNames];
 };
 
-const MenuNavigateButton: FC<NavigateButtonProps> = ({ label, path }) => {
-    const navigate = useNavigate();
-    const location = useLocation();
-
-    const handleNavigation = () => navigate(path);
-
-    const isCurrentPath = location.pathname.includes(path);
-
-    return (
-        <NavItem isActive={isCurrentPath} onClick={handleNavigation}>
-            {label}
-        </NavItem>
-    );
-};
+const sections: { title: string; links: NavLinkInfo[] }[] = [
+    {
+        links: [
+            { label: 'Installation', path: PathNames.INSTALLATION },
+            { label: 'Examples', path: PathNames.EXAMPLES },
+            { label: 'Keyboard and touch', path: PathNames.KEYBOARD_AND_TOUCH },
+        ],
+        title: 'Getting started',
+    },
+    {
+        links: [
+            { label: 'NestedDropdown', path: PathNames.NESTED_DROPDOWN },
+            { label: 'ContextMenu', path: PathNames.CONTEXT_MENU },
+            { label: 'NestedMenuItem', path: PathNames.NESTED_MENU_ITEM },
+            { label: 'IconMenuItem', path: PathNames.ICON_MENU_ITEM },
+        ],
+        title: 'Components',
+    },
+    {
+        links: [{ label: 'nestedMenuItemsFromObject', path: PathNames.MENU_ITEMS_FROM_OBJECT }],
+        title: 'Data',
+    },
+];
 
 export const NavigationPanel: FC = () => {
+    const location = useLocation();
+    const currentSlug = location.pathname.replace(/^\/+|\/+$/g, '');
+
     return (
-        <PanelContainer gap="2px">
-            <Space size="8px" vertical />
-            <MenuNavigateButton label="Installation" path={PathNames.INSTALLATION} />
-            <Space size="16px" vertical />
-            <NavSectionLabel>Components</NavSectionLabel>
-            <Space size="4px" vertical />
-            <MenuNavigateButton label="ContextMenu" path={PathNames.CONTEXT_MENU} />
-            <MenuNavigateButton label="NestedDropdown" path={PathNames.NESTED_DROPDOWN} />
-            <MenuNavigateButton label="NestedMenuItem" path={PathNames.NESTED_MENU_ITEM} />
-            <MenuNavigateButton label="IconMenuItem" path={PathNames.ICON_MENU_ITEM} />
+        <PanelContainer aria-label="Documentation">
+            {sections.map((section) => (
+                <Fragment key={section.title}>
+                    <NavSectionLabel>{section.title}</NavSectionLabel>
+                    {section.links.map((link) => (
+                        <NavItem
+                            aria-current={currentSlug === link.path ? 'page' : undefined}
+                            isActive={currentSlug === link.path}
+                            key={link.path}
+                            to={`/${link.path}`}
+                        >
+                            {link.label}
+                        </NavItem>
+                    ))}
+                </Fragment>
+            ))}
+            <SponsorSlot>
+                <SponsorCard />
+            </SponsorSlot>
         </PanelContainer>
     );
 };

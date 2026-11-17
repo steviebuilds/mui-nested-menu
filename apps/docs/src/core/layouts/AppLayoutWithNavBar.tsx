@@ -1,7 +1,7 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import { FC, ReactNode } from 'react';
-import { Outlet } from 'react-router';
+import { FC, ReactNode, useEffect, useRef } from 'react';
+import { Outlet, useLocation } from 'react-router';
 import { Row, Scrollable } from 'ui';
 
 import { APP_BAR_HEIGHT, MENU_PANEL_WIDTH } from '@/core/constants';
@@ -15,7 +15,6 @@ const AppLayoutContainer = styled.div`
 
 const PanelContainer = styled.div`
     ${() => css`
-        align-items: center;
         display: flex;
         flex-direction: column;
         height: 100vh;
@@ -43,8 +42,10 @@ const ContentContainer = styled.div`
 
 const ContentInner = styled.div`
     ${({ theme }) => css`
-        max-width: 768px;
-        padding: calc(${theme.sizes.padding} * 10);
+        margin: 0 auto;
+        max-width: 860px;
+        padding: calc(${theme.sizes.padding} * 10) calc(${theme.sizes.padding} * 12)
+            calc(${theme.sizes.padding} * 24);
         width: 100%;
     `}
 `;
@@ -54,18 +55,36 @@ type AppLayoutWithNavBarProps = {
     panelContent: ReactNode;
 };
 
-export const AppLayoutWithNavBar: FC<AppLayoutWithNavBarProps> = ({ appbar, panelContent }) => (
-    <AppLayoutContainer>
-        {appbar}
-        <Row>
-            <PanelContainer>{panelContent}</PanelContainer>
-            <ContentContainer>
-                <Scrollable>
-                    <ContentInner>
-                        <Outlet />
-                    </ContentInner>
-                </Scrollable>
-            </ContentContainer>
-        </Row>
-    </AppLayoutContainer>
-);
+export const AppLayoutWithNavBar: FC<AppLayoutWithNavBarProps> = ({ appbar, panelContent }) => {
+    const location = useLocation();
+    const contentRef = useRef<HTMLDivElement>(null);
+
+    // Start each page at the top, or at the section named in the URL hash.
+    useEffect(() => {
+        const target = location.hash ? document.getElementById(decodeURIComponent(location.hash.slice(1))) : null;
+
+        if (target) {
+            target.scrollIntoView();
+
+            return;
+        }
+
+        contentRef.current?.scrollTo({ top: 0 });
+    }, [location.pathname, location.hash]);
+
+    return (
+        <AppLayoutContainer>
+            {appbar}
+            <Row>
+                <PanelContainer>{panelContent}</PanelContainer>
+                <ContentContainer ref={contentRef}>
+                    <Scrollable>
+                        <ContentInner>
+                            <Outlet />
+                        </ContentInner>
+                    </Scrollable>
+                </ContentContainer>
+            </Row>
+        </AppLayoutContainer>
+    );
+};
