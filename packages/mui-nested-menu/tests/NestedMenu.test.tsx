@@ -106,6 +106,28 @@ describe('keyboard', () => {
         expect(isOpen('Omega')).toBe(true);
     });
 
+    it('does not close a submenu on the arrow keys typed in a field inside it', async () => {
+        const { user } = renderMenu(
+            <Menu open anchorEl={document.body}>
+                <NestedMenuItem parentMenuOpen label="Options">
+                    <MenuItem>
+                        <input aria-label="Name" defaultValue="abc" />
+                    </MenuItem>
+                </NestedMenuItem>
+            </Menu>
+        );
+        await user.hover(screen.getByText('Options'));
+        const input = await screen.findByRole('textbox', { name: 'Name' });
+        input.focus();
+
+        await user.keyboard('{ArrowLeft}');
+        expect(isOpen('Options')).toBe(true);
+        expect(screen.queryByRole('textbox', { name: 'Name' })).not.toBeNull();
+
+        await user.keyboard('{Escape}');
+        await waitFor(() => expect(screen.queryByRole('textbox', { name: 'Name' })).toBeNull());
+    });
+
     it.each([['Enter'], [' ']])('opens a parent item with %j and focuses its first item', async (key) => {
         const { user } = renderMenu(<NestedDropdown menuItemsData={threeLevelData()} />);
         await openDropdown(user);
@@ -215,6 +237,25 @@ describe('touch', () => {
 
         tap(file);
         await waitFor(() => expect(isOpen('Open')).toBe(false));
+    });
+
+    it('still calls ContainerProps.onMouseEnter for emulated hover without opening', async () => {
+        const onMouseEnter = vi.fn();
+        renderMenu(
+            <Menu open anchorEl={document.body}>
+                <NestedMenuItem parentMenuOpen label="Options" ContainerProps={{ onMouseEnter }}>
+                    <MenuItem>Child</MenuItem>
+                </NestedMenuItem>
+            </Menu>
+        );
+        const label = screen.getByText('Options');
+
+        fireEvent.pointerDown(label, { pointerType: 'touch' });
+        fireEvent.mouseEnter(label);
+        await new Promise((resolve) => setTimeout(resolve, 50));
+
+        expect(onMouseEnter).toHaveBeenCalledTimes(1);
+        expect(isOpen('Child')).toBe(false);
     });
 
     it('does not select an item in a submenu that the same tap just opened', async () => {

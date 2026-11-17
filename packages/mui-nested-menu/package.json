@@ -28,7 +28,7 @@
         "clean": "rm -rf dist",
         "copy": "node scripts/copy-dist.mjs",
         "dist": "pnpm run clean && pnpm run build && pnpm run copy",
-        "release": "pnpm run dist && cd dist && npm publish",
+        "release": "pnpm test && pnpm typecheck && pnpm run dist && cd dist && npm publish",
         "test": "vitest run",
         "typecheck": "tsc --noEmit -p ."
     },

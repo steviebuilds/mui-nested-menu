@@ -34,6 +34,24 @@ describe('callbacks', () => {
     });
 });
 
+describe('MenuItemProps', () => {
+    it('runs both MenuItemProps.onClick and callback on a parent item', async () => {
+        const callback = vi.fn();
+        const onClick = vi.fn();
+        const data: MenuItemData = {
+            items: [{ MenuItemProps: { onClick }, callback, items: [{ label: 'Child' }], label: 'Parent' }],
+        };
+        const { user } = renderMenu(<NestedDropdown menuItemsData={data} />);
+        await openDropdown(user);
+
+        await user.click(screen.getByText('Parent'));
+
+        expect(onClick).toHaveBeenCalledTimes(1);
+        expect(callback).toHaveBeenCalledTimes(1);
+        expect(screen.queryByText('Child')).not.toBeNull();
+    });
+});
+
 describe('item data', () => {
     it('renders items with the same label without a duplicate key warning (#42)', async () => {
         const error = vi.spyOn(console, 'error').mockImplementation(() => undefined);

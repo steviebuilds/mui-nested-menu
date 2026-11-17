@@ -1,9 +1,10 @@
 import type { MenuProps } from '@mui/material';
+import { paperClasses } from '@mui/material';
 
 type SubmenuMenuProps = Partial<Omit<MenuProps, 'children'>>;
 
 // pointer-events is inherited, so the paper needs its own value to take pointer events back from the root.
-const paperTakesPointerEvents = { '& .MuiPaper-root': { pointerEvents: 'auto' } };
+const paperTakesPointerEvents = { [`& .${paperClasses.root}`]: { pointerEvents: 'auto' } };
 
 /**
  * Merge a user's `MenuProps` with what a submenu needs to keep its hover and pointer handling:

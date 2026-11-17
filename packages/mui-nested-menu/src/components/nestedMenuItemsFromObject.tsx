@@ -57,9 +57,15 @@ export function nestedMenuItemsFromObject({
                     disabled={disabled}
                     MenuProps={MenuProps}
                     placement={placement}
-                    // A click on a parent row opens its submenu; the menu stays open.
-                    onClick={(event: React.MouseEvent<HTMLElement>) => callback && callback(event, item)}
                     {...MenuItemProps}
+                    // A click on a parent row opens its submenu; the menu stays open. Both the item's own
+                    // `MenuItemProps.onClick` and `callback` run.
+                    onClick={(event: React.MouseEvent<HTMLLIElement>) => {
+                        MenuItemProps?.onClick?.(
+                            event as React.MouseEvent<HTMLLIElement> & React.MouseEvent<HTMLButtonElement>
+                        );
+                        callback && callback(event, item);
+                    }}
                 >
                     {/* Call this function to nest more items */}
                     {nestedMenuItemsFromObject({

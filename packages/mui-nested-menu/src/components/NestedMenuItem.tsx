@@ -43,6 +43,13 @@ export type NestedMenuItemProps = Omit<MenuItemProps, 'button'> & {
     placement?: SubmenuPlacement;
 };
 
+/** Whether typing in the element edits text, so arrow keys belong to it and not to the menu. */
+const isTextField = (target: EventTarget) => {
+    const el = target as HTMLElement;
+
+    return ['INPUT', 'TEXTAREA', 'SELECT'].includes(el.tagName) || el.isContentEditable;
+};
+
 /** How long after a touch tap opens a submenu its items ignore clicks (see #45). */
 const TOUCH_OPEN_GUARD_MS = 500;
 
@@ -164,7 +171,9 @@ const NestedMenuItem = forwardRef<HTMLLIElement | null, NestedMenuItemProps>(
             // Touch devices emulate hover before the click. Opening on that makes the submenu appear
             // under the finger, and the click then selects one of its items (#45).
             if (isTouchRef.current) {
-                return;
+                ContainerProps.onMouseEnter?.(e);
+                
+return;
             }
 
             hoverTimeoutRef.current && clearTimeout(hoverTimeoutRef.current);
@@ -278,7 +287,8 @@ const NestedMenuItem = forwardRef<HTMLLIElement | null, NestedMenuItemProps>(
 
             e.stopPropagation();
 
-            if (e.key === 'Escape' || e.key === closeKey) {
+            // The left arrow (or right, with `placement="left"`) moves the caret in a field in the submenu.
+            if (e.key === 'Escape' || (e.key === closeKey && !isTextField(e.target))) {
                 e.preventDefault();
                 closeAndFocusItem();
             }
