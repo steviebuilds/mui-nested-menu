@@ -1,34 +1,20 @@
-import { ReactNode } from 'react';
-
 import { PathNames } from '@/core/configs/paths';
 
-export const getPageFromRoute = (route: string): { name: string; page: ReactNode } | null => {
-    let page = null;
+type PageInfo = { name: string };
 
-    Object.entries(componentsRouteMap).forEach(([pageSlug, info]) => {
-        const pageRoute = `/${pageSlug}`;
-        if (route === pageRoute || route === pageRoute + '/') {
-            page = info;
-        }
-    });
-
-    return page;
+const componentsRouteMap: Record<string, PageInfo> = {
+    [PathNames.CONTEXT_MENU]: { name: 'ContextMenu' },
+    [PathNames.EXAMPLES]: { name: 'Examples' },
+    [PathNames.ICON_MENU_ITEM]: { name: 'IconMenuItem' },
+    [PathNames.INSTALLATION]: { name: 'Installation' },
+    [PathNames.KEYBOARD_AND_TOUCH]: { name: 'Keyboard and touch' },
+    [PathNames.MENU_ITEMS_FROM_OBJECT]: { name: 'nestedMenuItemsFromObject' },
+    [PathNames.NESTED_DROPDOWN]: { name: 'NestedDropdown' },
+    [PathNames.NESTED_MENU_ITEM]: { name: 'NestedMenuItem' },
 };
 
-const componentsRouteMap = {
-    [PathNames.INSTALLATION]: {
-        name: 'Installation',
-    },
-    [PathNames.CONTEXT_MENU]: {
-        name: 'ContextMenu',
-    },
-    [PathNames.NESTED_DROPDOWN]: {
-        name: 'NestedDropdown',
-    },
-    [PathNames.NESTED_MENU_ITEM]: {
-        name: 'NestedMenuItem',
-    },
-    [PathNames.ICON_MENU_ITEM]: {
-        name: 'IconMenuItem',
-    },
+export const getPageFromRoute = (route: string): PageInfo | null => {
+    const slug = route.replace(/^\/+|\/+$/g, '');
+
+    return componentsRouteMap[slug] ?? null;
 };

@@ -1,8 +1,5 @@
-import MenuItem, { MenuItemProps } from '@mui/material/MenuItem';
-import { styled } from '@mui/material/styles';
-import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
-import { SxProps } from '@mui/material';
+import type { MenuItemProps, SxProps } from '@mui/material';
+import { Box, MenuItem, styled, Typography } from '@mui/material';
 import React, { forwardRef, RefObject } from 'react';
 
 const StyledMenuItem = styled(MenuItem)({
@@ -35,12 +32,42 @@ type IconMenuItemProps = {
     sx?: SxProps;
 };
 
+const toSxArray = (sx?: MenuItemProps['sx']) => (Array.isArray(sx) ? sx : sx === undefined ? [] : [sx]);
+
 export const IconMenuItem = forwardRef<HTMLLIElement, IconMenuItemProps>(function IconMenuItem(
-    { MenuItemProps, className, label, leftIcon, renderLabel, rightIcon, ...props },
+    {
+        MenuItemProps: { className: itemClassName, onClick: itemOnClick, sx: itemSx, ...itemProps } = {},
+        className,
+        disabled,
+        label,
+        leftIcon,
+        onClick,
+        renderLabel,
+        rightIcon,
+        sx,
+        ...props
+    },
     ref
 ) {
+    const classNames = [itemClassName, className].filter(Boolean).join(' ') || undefined;
+    const handleClick =
+        itemOnClick || onClick
+            ? (event: React.MouseEvent<HTMLLIElement>) => {
+                  itemOnClick?.(event);
+                  onClick?.(event);
+              }
+            : undefined;
+
     return (
-        <StyledMenuItem {...MenuItemProps} ref={ref} className={className} {...props}>
+        <StyledMenuItem
+            {...itemProps}
+            {...props}
+            ref={ref}
+            className={classNames}
+            disabled={disabled ?? itemProps.disabled}
+            onClick={handleClick}
+            sx={[...toSxArray(itemSx), ...toSxArray(sx as MenuItemProps['sx'])]}
+        >
             <FlexBox>
                 {leftIcon}
                 {renderLabel ? renderLabel() : <StyledTypography>{label}</StyledTypography>}

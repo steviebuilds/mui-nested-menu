@@ -1,13 +1,20 @@
-import Menu from '@mui/material/Menu';
-import { forwardRef, MouseEvent, MutableRefObject, ReactNode, useRef, useState } from 'react';
+import type { MenuProps as MuiMenuProps } from '@mui/material';
+import { Menu } from '@mui/material';
+import { forwardRef, MouseEvent, ReactNode, useImperativeHandle, useRef, useState } from 'react';
 
-import { MenuItemData } from '../definitions';
+import { MenuItemData, SubmenuPlacement } from '../definitions';
 import { nestedMenuItemsFromObject } from './nestedMenuItemsFromObject';
 
 export type ContextMenuProps = {
     children?: ReactNode;
     menuItems?: ReactNode[];
     menuItemsData?: MenuItemData[];
+    /** Props for the root menu. */
+    MenuProps?: Partial<MuiMenuProps>;
+    /** Props for every submenu, at every depth. */
+    SubmenuProps?: Partial<Omit<MuiMenuProps, 'children'>>;
+    /** Side the submenus open on. */
+    placement?: SubmenuPlacement;
 };
 
 type Position = {
@@ -16,50 +23,66 @@ type Position = {
 };
 
 export const ContextMenu = forwardRef<HTMLDivElement, ContextMenuProps>(function ContextMenu(
-    { children, menuItems, menuItemsData },
+    { children, menuItems, menuItemsData, MenuProps, SubmenuProps, placement },
     ref
 ) {
-    const wrapperRef = (ref as MutableRefObject<HTMLDivElement>) ?? useRef<HTMLDivElement>(null);
+    const wrapperRef = useRef<HTMLDivElement>(null);
+    useImperativeHandle(ref, () => wrapperRef.current as HTMLDivElement);
 
     const [menuPosition, setMenuPosition] = useState<Position | null>(null);
 
-    const [mouseDownPosition, setMouseDownPosition] = useState<Position | null>(null);
+    const handleClose = () => setMenuPosition(null);
 
-    const handleItemClick = () => setMenuPosition(null);
+    const openAt = (e: MouseEvent) => {
+        let { clientX: left, clientY: top } = e;
 
-    const handleMouseDown = (e: MouseEvent) => {
-        if (menuPosition !== null) setMenuPosition(null);
-
-        if (e.button !== 2) return;
-
-        const wrapperBounds = wrapperRef.current.getBoundingClientRect();
-
-        if (
-            e.clientX < wrapperBounds.left ||
-            e.clientX > wrapperBounds.right ||
-            e.clientY < wrapperBounds.top ||
-            e.clientY > wrapperBounds.bottom
-        ) {
-            return;
+        // Keyboard-triggered events can report 0, 0: open at the wrapper instead.
+        if (left === 0 && top === 0) {
+            const bounds = wrapperRef.current?.getBoundingClientRect();
+            left = bounds?.left ?? 0;
+            top = bounds?.top ?? 0;
         }
 
-        setMouseDownPosition({
-            left: e.clientX,
-            top: e.clientY,
-        });
+        setMenuPosition({ left, top });
     };
 
-    const handleMouseUp = (e: MouseEvent) => {
-        const top = e.clientY;
-        const left = e.clientX;
+    // Native `contextmenu` covers right-click, Ctrl-click on macOS, touch long-press (where the
+    // browser fires it) and the keyboard Menu key / Shift+F10.
+    const handleContextMenu = (e: MouseEvent) => {
+        e.preventDefault();
+        openAt(e);
+    };
 
-        if (mouseDownPosition === null) return;
+    // The menu renders in a portal, but its events still bubble to the wrapper.
+    const handleMenuContextMenu = (e: MouseEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
 
-        if (mouseDownPosition.top === top && mouseDownPosition.left === left) {
-            setMenuPosition({
-                left: e.clientX,
-                top: e.clientY,
-            });
+        // A right-click on the backdrop over the wrapper moves the menu there, as in 4.0. On the menu
+        // itself, or outside the wrapper, it closes the menu.
+        const bounds = wrapperRef.current?.getBoundingClientRect();
+        const overWrapper =
+            !!bounds &&
+            e.clientX >= bounds.left &&
+            e.clientX <= bounds.right &&
+            e.clientY >= bounds.top &&
+            e.clientY <= bounds.bottom;
+
+        if (overWrapper && !(e.target as Element).closest('[role="menu"]')) {
+            openAt(e);
+        } else {
+            handleClose();
+        }
+    };
+
+    // A static `menuItems` list has no `handleClose` to call, so a click on an item (a parent item
+    // that only opens a submenu does not count) closes the menu here. Clicks inside submenus bubble
+    // through their portals to this handler.
+    const handleMenuClick = (e: MouseEvent<HTMLDivElement>) => {
+        MenuProps?.onClick?.(e);
+
+        if (menuItems && (e.target as Element).closest('[role="menuitem"]:not([aria-haspopup])')) {
+            handleClose();
         }
     };
 
@@ -67,23 +90,25 @@ export const ContextMenu = forwardRef<HTMLDivElement, ContextMenuProps>(function
         menuItems ??
         (menuItemsData &&
             nestedMenuItemsFromObject({
-                handleClose: handleItemClick,
+                MenuProps: SubmenuProps,
+                handleClose,
                 isOpen: !!menuPosition,
                 menuItemsData: menuItemsData,
+                placement,
             }));
 
     return (
-        <div
-            ref={wrapperRef}
-            onContextMenu={(e) => e.preventDefault()}
-            onMouseDown={handleMouseDown}
-            onMouseUp={handleMouseUp}
-        >
+        <div ref={wrapperRef} onContextMenu={handleContextMenu}>
             {menuPosition && (
                 <Menu
-                    onContextMenu={(e) => e.preventDefault()}
+                    {...MenuProps}
+                    onClick={handleMenuClick}
+                    onContextMenu={handleMenuContextMenu}
                     open={!!menuPosition}
-                    onClose={() => setMenuPosition(null)}
+                    onClose={(event, reason) => {
+                        handleClose();
+                        MenuProps?.onClose?.(event, reason);
+                    }}
                     anchorReference="anchorPosition"
                     anchorPosition={menuPosition}
                 >

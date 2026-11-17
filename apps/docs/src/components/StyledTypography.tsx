@@ -43,11 +43,14 @@ const StyledSubheading = styled(Typography)`
         border-bottom: 1px solid ${theme.palette.border1};
         margin-top: 32px;
         padding-bottom: 8px;
+        scroll-margin-top: 24px;
     `}
 `;
 
 type SubheadingProps = {
     children?: ReactNode;
+    /** Anchor id, so other pages and issues can link straight to the section. */
+    id?: string;
 };
 
 export const Subheading: FC<SubheadingProps> = ({ children, ...props }) => (
@@ -55,3 +58,40 @@ export const Subheading: FC<SubheadingProps> = ({ children, ...props }) => (
         {children}
     </StyledSubheading>
 );
+
+export const List = styled.ul`
+    ${({ theme }) => css`
+        color: ${theme.palette.font2};
+        font-family: ${theme.typeography.family};
+        font-size: 1rem;
+        line-height: 1.7;
+        margin-bottom: calc(${theme.sizes.padding} * 5);
+        padding-left: 1.4em;
+
+        li {
+            margin-bottom: 4px;
+        }
+    `}
+`;
+
+export const OrderedList = List.withComponent('ol');
+
+const CalloutContainer = styled.div`
+    ${({ theme }) => css`
+        background-color: ${theme.palette.mode === 'light' ? '#F0F9FF' : '#0C1A2B'};
+        border: 1px solid ${theme.palette.mode === 'light' ? '#BAE6FD' : '#1E3A5F'};
+        border-radius: ${theme.sizes.borderRadiusMedium};
+        color: ${theme.palette.font2};
+        font-family: ${theme.typeography.family};
+        font-size: 0.9375rem;
+        line-height: 1.65;
+        margin: 8px 0 20px;
+        padding: 12px 16px;
+    `}
+`;
+
+type CalloutProps = {
+    children?: ReactNode;
+};
+
+export const Callout: FC<CalloutProps> = ({ children }) => <CalloutContainer>{children}</CalloutContainer>;

@@ -5,36 +5,19 @@
         "packages/*"
     ],
     "scripts": {
-        "commit": "npx cz",
-        "deduplicate": "yarn yarn-deduplicate -s fewer",
-        "docs": "yarn workspace docs",
-        "postinstall": "yarn deduplicate && yarn lint:sortpackages",
-        "lint": "concurrently \"yarn lint:eslint\" \"yarn lint:prettier\" \"yarn lint:sortpackages\"",
+        "docs": "pnpm --filter docs",
+        "lint": "concurrently \"pnpm lint:eslint\" \"pnpm lint:prettier\"",
         "lint:eslint": "eslint --config .eslintrc --fix '{*,**/*}.{js,jsx,ts,tsx}'",
         "lint:prettier": "prettier --write '{*,**/*}.{css,html,json,js,jsx,md,ts,tsx,yml,yaml}'",
-        "lint:sortpackages": "sort-package-json package.json **/*/package.json",
-        "menu": "yarn workspace mui-nested-menu",
-        "prepare": "husky install",
-        "prestart": "yarn global add turbo",
-        "start": "turbo run start"
-    },
-    "config": {
-        "commitizen": {
-            "path": "./node_modules/cz-customizable"
-        },
-        "cz-customizable": {
-            "config": "./cz.config.js"
-        }
+        "menu": "pnpm --filter mui-nested-menu",
+        "prepare": "husky",
+        "start": "pnpm --filter docs start"
     },
     "dependencies": {},
     "devDependencies": {
-        "@parcel/packager-ts": "2.13.3",
-        "@parcel/transformer-typescript-types": "2.13.3",
         "@typescript-eslint/eslint-plugin": "6.19.1",
         "@typescript-eslint/parser": "6.19.1",
-        "commitizen": "4.3.0",
         "concurrently": "8.2.2",
-        "cz-customizable": "7.0.0",
         "eslint": "8.56.0",
         "eslint-config-prettier": "9.1.0",
         "eslint-import-resolver-typescript": "3.6.1",
@@ -42,12 +25,9 @@
         "eslint-plugin-react": "7.33.2",
         "eslint-plugin-simple-import-sort": "10.0.0",
         "eslint-plugin-unused-imports": "3.0.0",
-        "fx": "34.0.0",
         "husky": "9.0.6",
         "lint-staged": "15.2.0",
-        "prettier": "3.2.4",
-        "sort-package-json": "2.6.0",
-        "turbo": "1.11.3",
-        "yarn-deduplicate": "6.0.2"
-    }
+        "prettier": "3.2.4"
+    },
+    "packageManager": "pnpm@10.28.0"
 }

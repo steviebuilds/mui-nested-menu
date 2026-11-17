@@ -6,12 +6,32 @@ import { useNavigate } from 'react-router';
 import { Button, Menu, MenuItem, Tooltip, Typography } from 'ui';
 
 import { APP_BAR_HEIGHT } from '@/core/constants';
+import { GITHUB_URL, NPM_URL } from '@/core/links';
 import { settingsContext } from '@/core/SettingsContext';
 
 const titleCase = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
 
 const ActionsGroup = styled.div`
+    align-items: center;
     display: flex;
+    gap: 4px;
+`;
+
+const ExternalLink = styled.a`
+    ${({ theme }) => css`
+        border-radius: ${theme.sizes.borderRadiusMedium};
+        color: ${theme.palette.font3};
+        font-family: ${theme.typeography.family};
+        font-size: 0.8125rem;
+        font-weight: 500;
+        padding: 6px 12px;
+        text-decoration: none;
+        transition: color 150ms ease;
+
+        &:hover {
+            color: ${theme.palette.font1};
+        }
+    `}
 `;
 
 const AppBarContainer = styled.div`
@@ -64,11 +84,17 @@ export const AppBar: FC = () => {
             <Tooltip direction="bottom" tip="Home">
                 <Button onClick={handleHomeClicked} variant="text">
                     <Typography noMargin noPointer variant="h6">
-                        MUI(v7) Nested Menu
+                        MUI Nested Menu
                     </Typography>
                 </Button>
             </Tooltip>
             <ActionsGroup>
+                <ExternalLink href={GITHUB_URL} rel="noopener noreferrer" target="_blank">
+                    GitHub
+                </ExternalLink>
+                <ExternalLink href={NPM_URL} rel="noopener noreferrer" target="_blank">
+                    npm
+                </ExternalLink>
                 <Tooltip direction="bottom" tip="Theme">
                     <ThemeToggle onClick={toggleMenu} ref={anchorElRef} variant="text">
                         {titleCase(settings?.mode)}
