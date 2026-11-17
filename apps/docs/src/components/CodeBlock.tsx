@@ -2,20 +2,21 @@
 /* eslint-disable import/no-named-as-default-member */
 import Prism from 'prismjs';
 import '@/core/styles/prism.css';
+import 'prismjs/components/prism-bash';
 import 'prismjs/components/prism-jsx';
 import 'prismjs/components/prism-tsx';
 import 'prismjs/components/prism-typescript';
 
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import { Fragment, useEffect, useRef, useState, memo } from 'react';
-import { Row, useSnackbar } from 'ui';
+import { useEffect, useRef, useState, memo } from 'react';
+import { useSnackbar } from 'ui';
 
 type CodeBlockProps = {
     code?: string;
     collapsable?: boolean;
     noCopy?: boolean;
-    lang?: 'tsx' | 'typescript';
+    lang?: 'bash' | 'css' | 'tsx' | 'typescript';
 };
 
 const CodeBlockContainer = styled.div`

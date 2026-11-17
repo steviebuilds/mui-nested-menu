@@ -1,214 +1,263 @@
-import AdbIcon from '@mui/icons-material/Adb';
-import FlutterDashIcon from '@mui/icons-material/FlutterDash';
-import NewIcon from '@mui/icons-material/InsertDriveFileOutlined';
-import SaveIcon from '@mui/icons-material/SaveRounded';
+import { css } from '@emotion/react';
+import styled from '@emotion/styled';
+import ContentCopyIcon from '@mui/icons-material/ContentCopyOutlined';
+import ContentCutIcon from '@mui/icons-material/ContentCutOutlined';
+import ContentPasteIcon from '@mui/icons-material/ContentPasteOutlined';
+import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import { Divider } from '@mui/material';
-import { createTheme, ThemeProvider as MTP } from '@mui/material/styles';
 import { ContextMenu, IconMenuItem, MenuItemData } from 'mui-nested-menu';
-import { FC, Fragment } from 'react';
+import { FC, Fragment, MouseEvent } from 'react';
+import { Link } from 'react-router-dom';
 
 import { CodeBlock } from '@/components/CodeBlock';
 import { PageHeader } from '@/components/ImportSample';
+import { PropsTable } from '@/components/PropsTable';
 import { SampleBox } from '@/components/SampleBox';
 import { Code, P, Subheading } from '@/components/StyledTypography';
+import { PathNames } from '@/core/configs/paths';
+
+const ContextArea = styled.div`
+    ${({ theme }) => css`
+        align-items: center;
+        border: 1px dashed ${theme.palette.border1};
+        border-radius: ${theme.sizes.borderRadiusMedium};
+        color: ${theme.palette.font2};
+        display: flex;
+        font-family: ${theme.typeography.family};
+        font-size: 0.875rem;
+        height: 120px;
+        justify-content: center;
+        max-width: 100%;
+        user-select: none;
+        width: 320px;
+    `}
+`;
+
+const logClick = (event: MouseEvent<HTMLElement>, item: MenuItemData) =>
+    console.log(`${item.label} clicked`, event, item);
 
 const menuItemsData: MenuItemData[] = [
+    { callback: logClick, label: 'Cut', leftIcon: <ContentCutIcon fontSize="small" /> },
+    { callback: logClick, label: 'Copy', leftIcon: <ContentCopyIcon fontSize="small" /> },
     {
-        callback: (event: React.MouseEvent<HTMLElement>, item: MenuItemData) =>
-            console.log('New clicked', event, item),
-        label: 'New',
-        leftIcon: <NewIcon />,
-    },
-    {
-        callback: (event: React.MouseEvent<HTMLElement>, item: MenuItemData) =>
-            console.log('Save clicked', event, item),
-        label: 'Save',
-        leftIcon: <SaveIcon />,
-    },
-    {
+        MenuItemProps: { divider: true },
         items: [
+            { callback: logClick, label: 'Plain text' },
+            { callback: logClick, label: 'Values only' },
             {
-                callback: (event: React.MouseEvent<HTMLElement>, item: MenuItemData) =>
-                    console.log('Save As > Option 1 clicked', event, item),
-                label: 'Option 1',
-                rightIcon: <FlutterDashIcon />,
-            },
-            {
-                callback: (event: React.MouseEvent<HTMLElement>, item: MenuItemData) =>
-                    console.log('Save As > Option 2 clicked', event, item),
-                label: 'Option 2',
-                leftIcon: <AdbIcon />,
-            },
-        ],
-        label: 'Save As',
-        leftIcon: <FlutterDashIcon />,
-    },
-    {
-        items: [
-            {
+                delay: 300,
                 items: [
-                    {
-                        callback: (event: React.MouseEvent<HTMLElement>, item: MenuItemData) =>
-                            console.log('Export > FT1 > O1 clicked', event, item),
-                        label: 'Option 1',
-                        rightIcon: <FlutterDashIcon />,
-                    },
-                    {
-                        callback: (event: React.MouseEvent<HTMLElement>, item: MenuItemData) =>
-                            console.log('Export > FT1 > O2 clicked', event, item),
-                        label: 'Option 2',
-                        leftIcon: <AdbIcon />,
-                    },
+                    { callback: logClick, label: 'Rows' },
+                    { callback: logClick, label: 'Columns' },
                 ],
-                label: 'File Type 1',
-            },
-            {
-                callback: (event: React.MouseEvent<HTMLElement>, item: MenuItemData) =>
-                    console.log('Export > FT2 clicked', event, item),
-                label: 'File Type 2',
+                label: 'Transposed (300 ms delay)',
             },
         ],
-        label: 'Export',
-        leftIcon: <AdbIcon />,
-        rightIcon: <AdbIcon />,
+        label: 'Paste special',
+        leftIcon: <ContentPasteIcon fontSize="small" />,
     },
     {
-        delay: 500,
-        items: [
-            {
-                callback: (event: React.MouseEvent<HTMLElement>, item: MenuItemData) =>
-                    console.log('Delay in ms to prevent blinking on hovering > I was delayed! clicked', event, item),
-                label: 'I was delayed!',
-            },
-        ],
-        label: 'Delay in ms to prevent blinking on hovering',
+        callback: logClick,
+        label: 'Delete',
+        leftIcon: <DeleteIcon fontSize="small" />,
+        sx: { color: 'error.main' },
     },
 ];
+
+const menuItemsDataCode = `const menuItemsData: MenuItemData[] = [
+  { label: 'Cut', leftIcon: <ContentCutIcon fontSize="small" />, callback: logClick },
+  { label: 'Copy', leftIcon: <ContentCopyIcon fontSize="small" />, callback: logClick },
+  {
+    label: 'Paste special',
+    leftIcon: <ContentPasteIcon fontSize="small" />,
+    MenuItemProps: { divider: true }, // line under this item
+    items: [
+      { label: 'Plain text', callback: logClick },
+      { label: 'Values only', callback: logClick },
+      {
+        label: 'Transposed (300 ms delay)',
+        delay: 300,
+        items: [
+          { label: 'Rows', callback: logClick },
+          { label: 'Columns', callback: logClick },
+        ],
+      },
+    ],
+  },
+  { label: 'Delete', leftIcon: <DeleteIcon fontSize="small" />, sx: { color: 'error.main' }, callback: logClick },
+];
+
+<ContextMenu menuItemsData={menuItemsData}>
+  <div>Right-click here</div>
+</ContextMenu>`;
+
+const submenuStyle = { slotProps: { paper: { sx: { borderRadius: 2, minWidth: 200 } } } };
 
 export const ContextMenuPage: FC = () => {
     return (
         <Fragment>
-            <PageHeader />
+            <PageHeader
+                description={
+                    <Fragment>
+                        Wrap any element to give it a nested right-click menu. It opens at the pointer on the
+                        browser&apos;s native <Code>contextmenu</Code> event.
+                    </Fragment>
+                }
+            />
+
+            <SampleBox hint="Right-click the box (Ctrl-click on a Mac, long-press on touch). Clicks are logged to the console.">
+                <ContextMenu menuItemsData={menuItemsData}>
+                    <ContextArea>Right-click here</ContextArea>
+                </ContextMenu>
+            </SampleBox>
+            <CodeBlock code={menuItemsDataCode} collapsable />
             <P>
-                When right clicked, it will open a context menu. Either provide the <Code>menuItems</Code>{' '}
-                prop or the <Code>menuItemsData</Code> prop.
+                Besides right-click, it opens on a Ctrl-click on macOS, a long-press on touch browsers that
+                fire <Code>contextmenu</Code>, and the Menu key or Shift+F10. See{' '}
+                <Link to={`/${PathNames.KEYBOARD_AND_TOUCH}`}>Keyboard and touch</Link>. Item clicks, at the
+                top level and in submenus, fire their callbacks and close the menu.
             </P>
-            <Subheading>menuItems</Subheading>
+
+            <Subheading>Elements instead of data</Subheading>
             <P>
-                <Code>menuItems</Code> allows you to insert other items such as dividers.
+                Pass <Code>menuItems</Code> instead of <Code>menuItemsData</Code> to build the menu from your
+                own elements, such as <Code>IconMenuItem</Code>s, <Code>NestedMenuItem</Code>s and{' '}
+                <Code>Divider</Code>s.
             </P>
-            <SampleBox>
-                <MTP theme={createTheme()}>
-                    <ContextMenu
-                        menuItems={[
-                            <IconMenuItem key="i1" label="Item 1" rightIcon={<NewIcon />} />,
-                            <Divider key="i2" />,
-                            <IconMenuItem key="i3" label="Item 2" rightIcon={<SaveIcon />} />,
-                        ]}
-                    >
-                        <div>Right Click Me!</div>
-                    </ContextMenu>
-                </MTP>
+            <SampleBox hint="Right-click the box.">
+                <ContextMenu
+                    menuItems={[
+                        <IconMenuItem key="cut" label="Cut" leftIcon={<ContentCutIcon fontSize="small" />} />,
+                        <IconMenuItem
+                            key="copy"
+                            label="Copy"
+                            leftIcon={<ContentCopyIcon fontSize="small" />}
+                        />,
+                        <Divider key="divider" />,
+                        <IconMenuItem
+                            key="delete"
+                            label="Delete"
+                            leftIcon={<DeleteIcon fontSize="small" />}
+                        />,
+                    ]}
+                >
+                    <ContextArea>Right-click here</ContextArea>
+                </ContextMenu>
             </SampleBox>
             <CodeBlock
                 code={`<ContextMenu
   menuItems={[
-    <IconMenuItem key="i1" label="Item 1" rightIcon={<NewIcon />} />,
-    <Divider key="i2" />,
-    <IconMenuItem key="i3" label="Item 2" rightIcon={<SaveIcon />} />,
+    <IconMenuItem key="cut" label="Cut" leftIcon={<ContentCutIcon fontSize="small" />} />,
+    <IconMenuItem key="copy" label="Copy" leftIcon={<ContentCopyIcon fontSize="small" />} />,
+    <Divider key="divider" />,
+    <IconMenuItem key="delete" label="Delete" leftIcon={<DeleteIcon fontSize="small" />} />,
   ]}
 >
-  <div>Right Click Me!</div>
+  <div>Right-click here</div>
+</ContextMenu>`}
+            />
+            <P>
+                With <Code>menuItems</Code>, a click on an item doesn&apos;t close the menu; Escape or a click
+                outside does. With <Code>menuItemsData</Code>, item clicks close it for you.
+            </P>
+
+            <Subheading>Menu and submenu props</Subheading>
+            <P>
+                <Code>MenuProps</Code> goes to the root menu and <Code>SubmenuProps</Code> to every submenu at
+                every depth. Use <Code>placement=&quot;left&quot;</Code> when the area sits near the right
+                edge of the screen.
+            </P>
+            <SampleBox
+                hint="Right-click the box: submenus open to the left with rounded corners."
+                justify="flex-end"
+            >
+                <ContextMenu
+                    MenuProps={submenuStyle}
+                    SubmenuProps={submenuStyle}
+                    menuItemsData={menuItemsData}
+                    placement="left"
+                >
+                    <ContextArea>Right-click here</ContextArea>
+                </ContextMenu>
+            </SampleBox>
+            <CodeBlock
+                code={`const paperStyle = { slotProps: { paper: { sx: { borderRadius: 2, minWidth: 200 } } } };
+
+<ContextMenu
+  menuItemsData={menuItemsData}
+  placement="left"
+  MenuProps={paperStyle}      // root menu
+  SubmenuProps={paperStyle}   // every submenu, at every depth
+>
+  <div>Right-click here</div>
 </ContextMenu>`}
             />
 
-            <Subheading>menuItemsData</Subheading>
-            <P>
-                <Code>menuItemsData</Code> allows you to create a menu from an object format. It is more
-                limited in what it can do.
-            </P>
-            <SampleBox>
-                <MTP theme={createTheme()}>
-                    <ContextMenu menuItemsData={menuItemsData}>
-                        <div>Right Click Me!</div>
-                    </ContextMenu>
-                </MTP>
-            </SampleBox>
-            <CodeBlock
-                code={`<ContextMenu menuItemsData={menuItemsData}>
-  <div>Right Click Me!</div>
-</ContextMenu>`}
-            />
-            <Subheading>Data Structure</Subheading>
-            <P>
-                The <Code>menuItemsData</Code> variable looks like the following:
-            </P>
-            <CodeBlock
-                code={`const menuItemsData: MenuItemData[] = [
-  {
-    label: 'New',
-    leftIcon: <NewIcon />,
-    callback: (event, item) => console.log('New clicked', event, item),
-  },
-  {
-    label: 'Save',
-    leftIcon: <SaveIcon />,
-    callback: (event, item) => console.log('Save clicked', event, item),
-  },
-  {
-    label: 'Save As',
-    leftIcon: <FlutterDashIcon />,
-    items: [
-      {
-        label: 'Option 1',
-        rightIcon: <FlutterDashIcon />,
-        callback: (event, item) => console.log('Save As > Option 1 clicked', event, item),
-      },
-      {
-        label: 'Option 2',
-        leftIcon: <AdbIcon />,
-        callback: (event, item) => console.log('Save As > Option 2 clicked', event, item),
-      },
-    ],
-  },
-  {
-    label: 'Export',
-    leftIcon: <AdbIcon />,
-    rightIcon: <AdbIcon />,
-    items: [
-      {
-        label: 'File Type 1',
-        items: [
-          {
-            label: 'Option 1',
-            rightIcon: <FlutterDashIcon />,
-            callback: (event, item) => console.log('Export > FT1 > O1 clicked', event, item),
-          },
-          {
-            label: 'Option 2',
-            leftIcon: <AdbIcon />,
-            callback: (event, item) => console.log('Export > FT1 > O2 clicked', event, item),
-          },
-        ],
-      },
-      {
-        label: 'File Type 2',
-        callback: (event, item) => console.log('Export > FT2 clicked', event, item),
-      },
-    ],
-  },
-  {
-    delay: 500,
-    items: [
-        {
-            callback: (event: React.MouseEvent<HTMLElement>, item: MenuItemData) =>
-                console.log('Delay in ms to prevent blinking on hovering > I was delayed! clicked', event, item),
-            label: 'I was delayed!',
-        },
-    ],
-    label: 'Delay in ms to prevent blinking on hovering',
-},
-]`}
+            <Subheading>Props</Subheading>
+            <PropsTable
+                rows={[
+                    {
+                        description: 'The area that opens the menu.',
+                        name: 'children',
+                        type: 'ReactNode',
+                    },
+                    {
+                        description: (
+                            <Fragment>
+                                The menu, as data. Every field is described under{' '}
+                                <Link to={`/${PathNames.MENU_ITEMS_FROM_OBJECT}#menu-item-data`}>
+                                    MenuItemData
+                                </Link>
+                                .
+                            </Fragment>
+                        ),
+                        name: 'menuItemsData',
+                        type: 'MenuItemData[]',
+                    },
+                    {
+                        description: (
+                            <Fragment>
+                                The menu, as elements. Used instead of <Code>menuItemsData</Code>.
+                            </Fragment>
+                        ),
+                        name: 'menuItems',
+                        type: 'ReactNode[]',
+                    },
+                    {
+                        description: (
+                            <Fragment>
+                                Props for the root MUI <Code>Menu</Code>.
+                            </Fragment>
+                        ),
+                        name: 'MenuProps',
+                        since: '4.1',
+                        type: 'Partial<MenuProps>',
+                    },
+                    {
+                        description: (
+                            <Fragment>
+                                Props for every submenu&apos;s MUI <Code>Menu</Code>, at every depth (
+                                <Code>sx</Code>, <Code>className</Code>, <Code>slotProps</Code>,{' '}
+                                <Code>hideBackdrop</Code>…). Applies to <Code>menuItemsData</Code>.
+                            </Fragment>
+                        ),
+                        name: 'SubmenuProps',
+                        since: '4.1',
+                        type: 'Partial<MenuProps>',
+                    },
+                    {
+                        default: "'right'",
+                        description: 'Which side submenus open on. The arrow keys follow it.',
+                        name: 'placement',
+                        since: '4.1',
+                        type: "'right' | 'left'",
+                    },
+                    {
+                        description: 'Forwarded to the wrapping <div>.',
+                        name: 'ref',
+                        type: 'Ref<HTMLDivElement>',
+                    },
+                ]}
             />
         </Fragment>
     );
