@@ -63,7 +63,8 @@ JSON
 JSON
     node -e '
         const fs = require("fs");
-        const c = JSON.parse(fs.readFileSync(process.argv[1], "utf8"));
+        // tsconfig.json may have trailing commas (prettier adds them).
+        const c = JSON.parse(fs.readFileSync(process.argv[1], "utf8").replace(/,(\s*[}\]])/g, "$1"));
         delete c.include; delete c.exclude;
         fs.writeFileSync(process.argv[2], JSON.stringify(c));
     ' "$PKG/tsconfig.json" "$dir/tsconfig.base.json"
