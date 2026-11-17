@@ -11,12 +11,12 @@
     "dependencies": {
         "@mui/icons-material": "^7.3.7",
         "@mui/material": "^7.3.7",
-        "mui-nested-menu": "*",
+        "mui-nested-menu": "workspace:*",
         "prismjs": "1.29.0",
         "react": "^19.0.0",
         "react-dom": "^19.0.0",
         "react-router-dom": "6.8.1",
-        "ui": "*"
+        "ui": "workspace:*"
     },
     "devDependencies": {
         "@emotion/react": "^11.14.0",
